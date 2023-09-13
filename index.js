@@ -4,8 +4,8 @@ const BodyParser = require('body-parser');
 const cors = require('cors');
 const connectDB = require('./DB/connect');
 const userRoutes = require('./Routes/userRoutes');
-
-
+const projectRoutes = require('./Routes/projectRoutes');
+const inspectionRoutes = require('./Routes/inspectionRoutes');
 
 // const jwt = require('jsonwebtoken');
 // const asyncHandler = require('express-async-handler');
@@ -24,6 +24,8 @@ app.use(experss.static('public'));
 
 app.get('/', (req, res) => { res.send('Hello World') ; res.end();});
 app.use('/api', userRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/inspections', inspectionRoutes);
 
 const start = async () => {
         try {

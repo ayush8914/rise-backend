@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const User = require('../Models/user');
 const sendResetPasswordEmail = require('../Controllers/sendmail');
+const multer = require('multer');
 
 //@desc     Register a new user
 //@route    POST /api/register
@@ -204,6 +205,24 @@ const verifyOtp = asyncHandler(async (req, res) => {
     
 });
 
+//update user profile
+const updateUserProfile = asyncHandler(async (req, res) => {
+    const {_id , fname, lname , profilepic} = await User.findById(req.user._id);
+    const {fname: newfname, lname: newlname, profilepic: newprofilepic} = req.body;
+    if(id){
+        user.fname = newfname;
+        user.lname = newlname;
+        user.profilepic = newprofilepic;
+        await user.save();
+        res.status(200).json({
+            _id,
+            fname,
+            lname,
+            profilepic
+        });
+    }
+});
+
 
 
 
@@ -211,4 +230,4 @@ function generateToken(id){
     return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: '30d'});
 }
 
-module.exports = { registerUser, loginUser, getUserProfile , verifyEmail, resendOTP,deleteUser, forgetpass,verifyOtp};
+module.exports = { registerUser, loginUser, getUserProfile , verifyEmail, resendOTP,deleteUser, forgetpass,verifyOtp,updateUserProfile};
