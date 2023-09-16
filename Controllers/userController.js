@@ -129,16 +129,35 @@ const loginUser = asyncHandler(async (req, res) => {
 //@access   Private
 
 const getUserProfile = asyncHandler(async (req, res) => {
-    const {_id , fname, lname , profilepic} = await User.findById(req.user._id);
-    
-   
-    res.status(200).json({
-            _id,
-            fname,
-            lname,
-            profilepic
-        });
-});
+    try {
+      const user = await User.findById(req.user._id);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      
+      if (!user.profilepic) {
+        return res.status(404).json({ error: 'Profile picture not found' });
+      }
+  
+      const profilePicFilename = user.profilepic;
+  
+      const { _id, fname, lname, email } = user;
+      res.status(200).json({
+        _id,
+        fname,
+        lname,
+        email,
+
+        profilepic: profilePicFilename, 
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
 
 //delete user
 const deleteUser = asyncHandler(async (req,res) =>{
@@ -282,7 +301,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
                 if (previousProfilePic != null) {
                     const parentDirectory = path.dirname(__dirname);
                     const previousImagePath = path.join(parentDirectory, 'public/userprofiles', previousProfilePic);
-                    
+                    console.log(previousImagePath);
                     // Check if the file exists before attempting to delete it
                     fs.access(previousImagePath, fs.constants.F_OK, (err) => {
                         if (err) {

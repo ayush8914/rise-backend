@@ -1,10 +1,11 @@
 require('dotenv').config();
-const experss = require('express');
+const express = require('express');
 const BodyParser = require('body-parser');
 const cors = require('cors');
 const connectDB = require('./DB/connect');
 const userRoutes = require('./Routes/userRoutes');
 const projectRoutes = require('./Routes/projectRoutes');
+const path = require('path');
 const inspectionRoutes = require('./Routes/inspectionRoutes');
 
 // const jwt = require('jsonwebtoken');
@@ -12,7 +13,7 @@ const inspectionRoutes = require('./Routes/inspectionRoutes');
 // const User = require('./models/user');
 
 
-const app = experss();
+const app = express();
 const PORT = process.env.PORT || 5000;
 
 
@@ -22,7 +23,7 @@ app.use(cors());
 app.use(BodyParser.json());
 // app.use(BodyParser.urlencoded({ extended: true }));
 
-app.use(experss.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => { res.send('Hello World') ; res.end();});
 app.use('/api', userRoutes);
