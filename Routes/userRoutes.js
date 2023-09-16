@@ -16,6 +16,7 @@ router.route('/resendotp/:id').post(resendOTP);
 //delete user
 router.route('/deleteuser/:id').delete(deleteUser)
 
+
 //forgot password
 router.route('/forgetpassword').post(forgetpass)
 //verfiy otp for forget password
@@ -28,6 +29,6 @@ router.route('/login').post(loginUser);
 router.get('/profile', protect,getUserProfile);
 
 //update user profile
-router.route('/updateprofile').put(protect,updateUserProfile);
+router.put('/updateprofile', protect, updateUserProfile);
 
 module.exports = router;

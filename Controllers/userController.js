@@ -5,6 +5,8 @@ const User = require('../Models/user');
 const sendResetPasswordEmail = require('../Controllers/sendmail');
 const multer = require('multer');
 
+
+
 //@desc     Register a new user
 //@route    POST /api/register
 //@access   Public
@@ -205,24 +207,119 @@ const verifyOtp = asyncHandler(async (req, res) => {
     
 });
 
-//update user profile
-const updateUserProfile = asyncHandler(async (req, res) => {
-    const {_id , fname, lname , profilepic} = await User.findById(req.user._id);
-    const {fname: newfname, lname: newlname, profilepic: newprofilepic} = req.body;
-    if(id){
-        user.fname = newfname;
-        user.lname = newlname;
-        user.profilepic = newprofilepic;
-        await user.save();
-        res.status(200).json({
-            _id,
-            fname,
-            lname,
-            profilepic
-        });
-    }
+
+// Set up storage for multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './public/userprofiles'); // Destination folder
+    },
+    filename: (req, file, cb) => {
+        
+        cb(null, Date.now() + file.originalname);
+    },
 });
 
+const fileFilter = (req, file, cb) => {
+    // Accept only image files
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type'), false);
+    }
+};
+
+
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
+});
+
+//update user profile
+// const updateUserProfile = asyncHandler(async (req, res) => {
+//     const {_id , fname, lname , profilepic} = await User.findById(req.user._id);
+//     const {fname: newfname, lname: newlname, profilepic: newprofilepic} = req.body;
+//     if(id){
+//         user.fname = newfname;
+//         user.lname = newlname;
+//         user.profilepic = newprofilepic;
+//         await user.save();
+//         res.status(200).json({
+//             _id,
+//             fname,
+//             lname,
+//             profilepic
+//         });
+//     }
+// });
+
+const path = require('path');
+const fs = require('fs');
+
+
+const updateUserProfile = asyncHandler(async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const previousProfilePic = user.profilepic;
+
+
+        upload.single('profilepic')(req, res, async (err) => {
+            if (err instanceof multer.MulterError) {
+                return res.status(400).json({ message: 'File upload error' });
+            } else if (err) {
+                return res.status(500).json({ message: 'Internal server error' });
+            }
+
+            if (req.file) {
+                user.profilepic = req.file.filename;
+           
+                if (previousProfilePic != null) {
+                    const parentDirectory = path.dirname(__dirname);
+                    const previousImagePath = path.join(parentDirectory, 'public/userprofiles', previousProfilePic);
+                    
+                    // Check if the file exists before attempting to delete it
+                    fs.access(previousImagePath, fs.constants.F_OK, (err) => {
+                        if (err) {
+                            // File doesn't exist
+                            console.error(`Error deleting previous image: File does not exist`);
+                        } else {
+                            // File exists, attempt to delete it
+                            fs.unlink(previousImagePath, (err) => {
+                                if (err) {
+                                    console.error(`Error deleting previous image: ${err}`);
+                                } else {
+                                    console.log(`Previous image deleted successfully`);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            const { fname, lname } = req.body;
+            user.fname = fname || user.fname;
+            user.lname = lname || user.lname;
+
+            await user.save();
+
+            res.status(200).json({
+                _id: user._id,
+                fname: user.fname,
+                lname: user.lname,
+                profilepic: user.profilepic || 'generaluserpic.png',
+            });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 
 

@@ -20,6 +20,8 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 app.use(cors());
 app.use(BodyParser.json());
+// app.use(BodyParser.urlencoded({ extended: true }));
+
 app.use(experss.static('public'));
 
 app.get('/', (req, res) => { res.send('Hello World') ; res.end();});

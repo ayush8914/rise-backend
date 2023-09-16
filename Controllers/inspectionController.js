@@ -22,6 +22,7 @@ const getInspectionById = asyncHandler(async (req, res) => {
 
 //create inspection
 const createInspection = asyncHandler(async (req, res) => {
+    
     const projectid = req.params.id;
     const {Date ,
         starttime,
@@ -47,6 +48,7 @@ const createInspection = asyncHandler(async (req, res) => {
         reason_for_inspection,
         inspection_date
     });
+
     const createdInspection = await inspection.save();
     if(createdInspection){
     res.status(200).json(createdInspection);
