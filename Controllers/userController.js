@@ -30,7 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
     // Generate a random 4-digit OTP
     const everification= "confirm your email";
     const otp = Math.floor(1000 + Math.random() * 9000);
-    await sendResetPasswordEmail(email, otp,everification);
+    await sendResetPasswordEmail(email, otp,everification,req);
 
     const user = await User.create({
         fname,
@@ -83,7 +83,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
 const resendOTP = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     const otp = Math.floor(1000 + Math.random() * 9000);
-    await sendResetPasswordEmail(user.email, otp);
+    await sendResetPasswordEmail(user.email, otp,req);
     user.otp = otp;
     user.emailverified = false;
     await user.save();

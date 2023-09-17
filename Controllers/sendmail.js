@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 
+
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -9,7 +10,8 @@ const transporter = nodemailer.createTransport({
     });
     
     // Function to send the reset password email
-    function sendResetPasswordEmail(email, otp, verification) {
+    function sendResetPasswordEmail(email, otp, verification,req) {
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
         const mailOptions = {
             from: 'ayushgevariya8914@gmail.com',
             to: email,
@@ -35,7 +37,7 @@ const transporter = nodemailer.createTransport({
                 <body>
                   <div class="container">
                     <h1>Email confirmation</h1>
-                    <img src="./public/rise.png" alt="Email Confirmation Image" width="200" height="200">
+                    <img src="${baseUrl}/emailpic.png" alt="Email Confirmation Image" width="200" height="200">
                     <p>You've requested an account. Please use the following OTP to ${verification}:</p>
                     <p class="otp">${otp}</p>
                     
