@@ -35,7 +35,7 @@ const transporter = nodemailer.createTransport({
                 <body>
                   <div class="container">
                     <h1>Email confirmation</h1>
-                    <img src="rise.jpeg" alt="Email Confirmation Image" width="200" height="200">
+                    <img src="./public/rise.png" alt="Email Confirmation Image" width="200" height="200">
                     <p>You've requested an account. Please use the following OTP to ${verification}:</p>
                     <p class="otp">${otp}</p>
                     

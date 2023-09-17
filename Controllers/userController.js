@@ -142,6 +142,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
       }
   
       const profilePicFilename = user.profilepic;
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const imageurl = baseUrl+'/userprofiles/' + profilePicFilename;
   
       const { _id, fname, lname, email } = user;
       res.status(200).json({
@@ -149,8 +151,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
         fname,
         lname,
         email,
-
-        profilepic: profilePicFilename, 
+        imageurl
       });
     } catch (error) {
       console.error(error);
