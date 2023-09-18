@@ -5,7 +5,12 @@ const Project = require('../Models/project');
 //get all projects
 const getProjects = asyncHandler(async (req, res) => {
     const projects = await Project.find({});
-    res.status(200).json(projects);
+    res.status(200).json({
+        Status:1,
+        Message: "Successful",
+        info:projects
+       }
+        );
 });
 
 
@@ -15,7 +20,7 @@ const getProjectById = asyncHandler(async (req, res) => {
     const project = await Project.findById(req.params.id);
     if(project){
         res.status(200).json({
-           status:1,
+           Status:1,
            Message : "Fetched successfully",
            info: project
         }
@@ -23,7 +28,7 @@ const getProjectById = asyncHandler(async (req, res) => {
     }
     else{
         res.status(404).json(
-            {   status:0,
+            {   Status:0,
                 Message: 'Project not found'
             });
     }
@@ -45,14 +50,14 @@ const createProject = asyncHandler(async (req, res) => {
     });
     const createdProject = await project.save();
     res.status(200).json({
-        status:1,
+        Status:1,
         Message:"New Project Added",
         info:createdProject
     }
         );
   }catch(e){
     res.status(404).json({
-        status:0,
+        Status:0,
         Message:"Something went wrong try to create again"
     })
   }
