@@ -11,12 +11,21 @@ const getProjects = asyncHandler(async (req, res) => {
 
 //get project by id
 const getProjectById = asyncHandler(async (req, res) => {
+
     const project = await Project.findById(req.params.id);
     if(project){
-        res.status(200).json(project);
+        res.status(200).json({
+           status:1,
+           Message : "Fetched successfully",
+           info: project
+        }
+            );
     }
     else{
-        res.status(404).json({error: 'Project not found'});
+        res.status(404).json(
+            {   status:0,
+                Message: 'Project not found'
+            });
     }
 });
 
