@@ -72,6 +72,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const verifyEmail = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
+    if(!user){
+        return res.status(404).json({
+            Status:0,
+            Message:"Please Register first"
+        });
+    }
     const {otp} = req.body;
     const exists = await User.findOne({email: user.email, otp: otp});
     if(exists){
@@ -110,6 +116,7 @@ const resendOTP = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     const otp = Math.floor(1000 + Math.random() * 9000);
     const verification= "confirm your email";
+    try{
     await sendResetPasswordEmail(user.email, otp,verification,req);
     user.otp = otp;
     user.emailverified = false;
@@ -130,6 +137,14 @@ const resendOTP = asyncHandler(async (req, res) => {
     }
    }
     );
+}catch(e){
+    return res.status(400).json(
+        {
+        Status:0,
+        Message: 'Something went wrong try again' 
+    }
+    );
+}
 });
 
 //@desc     Login a user
@@ -208,18 +223,23 @@ const getUserProfile = asyncHandler(async (req, res) => {
       const imageurl = baseUrl+'/userprofiles/' + profilePicFilename;
   
       const { _id, fname, lname, email } = user;
-      res.status(200).json({
+      res.status(200).json(
+         { Status:1,
+            Message:"Profile fetched successfully",
+        info:{
         user_id:_id,
         first_name:fname,
         last_name:lname,
         email_id:email,
         profile_pic:imageurl
-      });
+      }
+    }
+      );
     } catch (error) {
     //   console.error(error);
       res.status(500).json(
         {   Status:0,
-            Message: 'Internal server error' 
+            Message: 'Error in profile fetching' 
         }
         );
     }
