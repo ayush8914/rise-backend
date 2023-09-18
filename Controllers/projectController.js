@@ -25,9 +25,10 @@ const getProjectById = asyncHandler(async (req, res) => {
 const createProject = asyncHandler(async (req, res) => {
     const {contractor_name, site_name, site_location} = req.body;
 
-    // const userid = req.user._id;     //from auth middleware
+    const userid = req.user._id;     //from auth middleware
 
     const project = new Project({
+        userid,
         contractor_name,
         site_name,
         site_location
