@@ -8,8 +8,8 @@ const observationSchema = new mongoose.Schema({
 
 
 const subTypeSchema = new mongoose.Schema({
-   type:{type:String, required:true},
-   observations:[
+    type:{type:String, required:true},
+    observations:[
     observationSchema
    ]
 });

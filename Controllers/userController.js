@@ -15,13 +15,22 @@ const registerUser = asyncHandler(async (req, res) => {
     const {fname , lname , email , password } = req.body;
 
     if(!fname || !lname || !email || !password){
-        return res.status(400).json({ error: 'Please field all the fields' });  
+        return res.status(400).json(
+            { 
+            Status : 0,
+            Message: "Please field all the fields" 
+        });  
     }
 
     const userExists = await User.findOne({email});
 
     if(userExists){
-        return res.status(400).json({ error: 'Email already exists' });
+        return res.status(400).json(
+            { 
+                Status : 0,
+                Message: "Email already used"
+             }
+            );
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -41,13 +50,20 @@ const registerUser = asyncHandler(async (req, res) => {
     });
     
     if(user){
-        res.status(200).json({
-            _id: user._id,
-            fname: user.fname,
-            lname: user.lname,
-            email: user.email,
-            role: user.role,
-        });
+        res.status(200).json(
+          {
+            Status : 0,
+            Message: "Registration successful",
+           info: {
+            user_id: user._id,
+            first_name: user.fname,
+            last_name: user.lname,
+            email_id: user.email,
+            user_role: user.role,
+            otp: user.otp
+        }
+    }
+        );
     }
     else{
         return res.status(400).json({ error: 'Invaild user data' });
@@ -60,22 +76,32 @@ const verifyEmail = asyncHandler(async (req, res) => {
     const exists = await User.findOne({email: user.email, otp: otp});
     if(exists){
         user.emailverified = true;
-        user.otp = null;
+        // user.otp = null;
         await user.save();
-        res.status(200).json({
-            _id: user._id,
-            fname: user.fname,
-            lname: user.lname,
-            email: user.email,
-            role: user.role,
-            emailverified: user.emailverified,
-        });
+        res.status(200).json(
+            {
+            Status:1,
+            Message:"Email verified successfully",
+            info:{
+            user_id: user._id,
+            firsr_name: user.fname,
+            last_name: user.lname,
+            email_id: user.email,
+            user_role: user.role,
+            is_email_verified: user.emailverified,
+        }
+    }
+        );
     }
     else{
 
         // await User.findByIdAndDelete(user._id);
-        return res.status(400).json({ error: 'Invaild OTP' });
-        // throw new Error('Invalid OTP');
+        return res.status(400).json(
+            {
+            Status:0,
+            Message: 'Invaild OTP' 
+        }
+        );
     }
 });
 
@@ -87,13 +113,21 @@ const resendOTP = asyncHandler(async (req, res) => {
     user.otp = otp;
     user.emailverified = false;
     await user.save();
-    res.status(200).json({
-        _id: user._id,
-        fname: user.fname,
-        lname: user.lname,
-        email: user.email,
-        role: user.role,
-    });
+    res.status(200).json(
+
+        {
+         Status:1,
+         Message:"OTP sent successfully",       
+        info:{
+        user_id: user._id,
+        first_name: user.fname,
+        last_name: user.lname,
+        email_id: user.email,
+        user_role: user.role,
+        otp:user.otp
+    }
+   }
+    );
 });
 
 //@desc     Login a user
@@ -104,22 +138,38 @@ const loginUser = asyncHandler(async (req, res) => {
    const{email, password} = req.body;
 
     if(!email || !password){
-        return res.status(400).json({ error: 'Please field all the fields' });  
+        return res.status(400).json(
+            {   
+                Status:0,
+                Message: 'Please fill all the fields' 
+            }
+            );  
     }
 
     const user = await User.findOne({email});
     if(user && (await bcrypt.compare(password, user.password)) && user.emailverified){
-        res.status(200).json({
-            _id: user._id,
-            fname: user.fname,
-            lname: user.lname,
-            email: user.email,
-            role: user.role,
-            token: generateToken(user._id)
-        });
+        res.status(200).json(
+            {
+             Status:1,
+             Message:"Logged in successful",
+           info: {
+            user_id: user._id,
+            first_name: user.fname,
+            last_name: user.lname,
+            email_id: user.email,
+            user_role: user.role,
+            UserToken: generateToken(user._id)
+        }
+    }
+        );
     }
     else{
-       return res.status(400).json({error:'Invalid email or password or email not verified'});
+       return res.status(400).json(
+        {   
+            Status:0,
+            Message:"Invalid email or password or email not verified"
+        }
+        );
     }
 });
 
@@ -133,12 +183,22 @@ const getUserProfile = asyncHandler(async (req, res) => {
       const user = await User.findById(req.user._id);
   
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json(
+            {   
+                Status:0,
+                Message: 'User not found' 
+            }
+            );
       }
   
       
       if (!user.profilepic) {
-        return res.status(404).json({ error: 'Profile picture not found' });
+        return res.status(404).json(
+            {   
+                Status:0,
+                Message: 'Profile picture not found' 
+            }
+            );
       }
   
       const profilePicFilename = user.profilepic;
@@ -147,16 +207,21 @@ const getUserProfile = asyncHandler(async (req, res) => {
   
       const { _id, fname, lname, email } = user;
       res.status(200).json({
-        _id,
-        fname,
-        lname,
-        email,
-        imageurl
+        user_id:_id,
+        first_name:fname,
+        last_name:lname,
+        email_id:email,
+        profile_pic:imageurl
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal server error' });
+    //   console.error(error);
+      res.status(500).json(
+        {   Status:0,
+            Message: 'Internal server error' 
+        }
+        );
     }
+
   });
   
 
@@ -165,10 +230,19 @@ const deleteUser = asyncHandler(async (req,res) =>{
    const user = await User.findById(req.params.id);
    if(user){
    await User.findByIdAndDelete(req.params.id);
-   res.status(200).json({msg:'deleted successfully.'}); 
+   res.status(200).json(
+    {   Status:1,
+        Message:'Account removed successfully'
+    }
+    ); 
 }
    else{
-     return res.status(404).json({error:'user does not exist'})
+     return res.status(404).json(
+        {
+            Status:0,
+            Message:'No User found'
+        }
+        )
    }
 }
 
@@ -182,7 +256,12 @@ const forgetpass = asyncHandler(async(req,res)=>{
         const user = await User.findOne({ email });
         
         if (!user) {
-          return res.status(404).json({ error: 'User not found' });
+          return res.status(404).json(
+            {   
+                Status:0,
+                Message: 'User not found'
+            }
+            );
         }
         
         // Generate a reset token and set an expiration time
@@ -194,8 +273,17 @@ const forgetpass = asyncHandler(async(req,res)=>{
         
         await user.save();
         await sendResetPasswordEmail(email, resetToken,"reset your password");
-        res.status(200).json({meg:'opt sent successfully '});
-        
+        res.status(200).json(
+
+            {   
+                Status:1,
+                Message:'opt sent successfully. Valid for 5 mins',
+                pass_resetToken: user.resettoken,
+                token_valid : user.resettokentime
+            }
+
+            );
+       
 }
 );
 
@@ -207,7 +295,12 @@ const verifyOtp = asyncHandler(async (req, res) => {
     const newpassword = req.body.password;
     const confirmpassword = req.body.confirmpassword;
     if(newpassword !== confirmpassword){
-        return res.status(400).json({ error: 'password and confirm password does not match' });
+        return res.status(400).json(
+            {   
+                Status:0,
+                Message: 'New password and confirm password does not match' 
+            }
+            );
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newpassword, salt);
@@ -219,10 +312,20 @@ const verifyOtp = asyncHandler(async (req, res) => {
         user.resettoken = null;
         user.resettokentime = null;
         await user.save();
-        res.status(200).json({mes:'Password changed successfully'});
+        res.status(200).json(
+            {   Status:1,
+                Message:'Password changed successfully',
+                newpassword: user.password
+            }
+            );
     }
     else{
-        return res.status(400).json({ error: 'Invaild OTP' });
+        return res.status(400).json(
+            {   
+                Status : 0,
+                Message: 'Invaild OTP. Try again!'
+             }
+            );
     }
     
 });
@@ -244,7 +347,16 @@ const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image')) {
         cb(null, true);
     } else {
+
+        try{ 
         cb(new Error('Invalid file type'), false);
+        }
+        catch(e){
+            req.status(404).json({
+                Status:0,
+                Message:"Only images are allowed"
+            });
+        }
     }
 };
 
@@ -283,7 +395,12 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         const user = await User.findById(req.user._id);
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json(
+                {   
+                    Status:0,
+                    Message: 'User not found' 
+                }
+                );
         }
 
         const previousProfilePic = user.profilepic;
@@ -291,9 +408,18 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
         upload.single('profilepic')(req, res, async (err) => {
             if (err instanceof multer.MulterError) {
-                return res.status(400).json({ message: 'File upload error' });
+                return res.status(400).json(
+                    {   Status:0,
+                        Message: 'File upload error'
+                    }
+                    );
             } else if (err) {
-                return res.status(500).json({ message: 'Internal server error' });
+                return res.status(500).json(
+                    {   
+                        Status:0,
+                        Message: 'Internal server error'
+                     }
+                    );
             }
 
             if (req.file) {
@@ -328,12 +454,18 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
             await user.save();
 
-            res.status(200).json({
-                _id: user._id,
+            res.status(200).json(
+                {
+                    Status:1,
+                Message:"Updated successfully",
+                info:{
+                user_id: user._id,
                 fname: user.fname,
                 lname: user.lname,
                 profilepic: user.profilepic || 'generaluserpic.png',
-            });
+            }
+        }
+            );
         });
     } catch (err) {
         console.error(err);
