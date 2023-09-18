@@ -294,7 +294,7 @@ const forgetpass = asyncHandler(async(req,res)=>{
         user.resettokentime = resetExpires;
         
         await user.save();
-        await sendResetPasswordEmail(email, resetToken,"reset your password");
+        await sendResetPasswordEmail(email, resetToken,"reset your password",req);
         res.status(200).json(
 
             {   
