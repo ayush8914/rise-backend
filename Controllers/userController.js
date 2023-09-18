@@ -482,16 +482,22 @@ const updateUserProfile = asyncHandler(async (req, res) => {
                 Message:"Updated successfully",
                 info:{
                 user_id: user._id,
-                fname: user.fname,
-                lname: user.lname,
-                profilepic: user.profilepic || 'generaluserpic.png',
+                first_name: user.fname,
+                last_name: user.lname,
+                user_profile: user.profilepic || 'generaluserpic.png',
             }
         }
             );
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json(
+            {   
+                Status:0,
+                Message: 'Something went wrong. Profile not updated' 
+            }
+            );
+
     }
 });
 
