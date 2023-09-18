@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const projectSchema = new mongoose.Schema({
     //in mongodb id is automatically generated              //project id
-    // userid : { type: mongoose.Schema.Types.ObjectId, ref: "users" }, //ref to particular user so we can easily get the projects of that user
+    userid : { type: mongoose.Schema.Types.ObjectId, ref: "users" }, //ref to particular user so we can easily get the projects of that user
     contractor_name: { type: String, required: true },     //contractor name
     site_name: { type: String, required: true },           //site name
     site_location: { type: String, required: true },       //site location

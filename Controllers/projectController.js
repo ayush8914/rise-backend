@@ -24,14 +24,21 @@ const getProjectById = asyncHandler(async (req, res) => {
 //create project
 const createProject = asyncHandler(async (req, res) => {
     const {contractor_name, site_name, site_location} = req.body;
+
     // const userid = req.user._id;     //from auth middleware
+
     const project = new Project({
         contractor_name,
         site_name,
         site_location
     });
     const createdProject = await project.save();
-    res.status(200).json(createdProject);
+    res.status(200).json({
+        status:1,
+        Message:"New Project Added",
+        info:createdProject
+    }
+        );
 
 });
 
