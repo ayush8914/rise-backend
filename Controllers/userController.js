@@ -250,7 +250,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 //delete user
 const deleteUser = asyncHandler(async (req,res) =>{
    const user = await User.findById(req.params.id);
-   if(user){
+   if(user && user.emailverified){
    await User.findByIdAndDelete(req.params.id);
    res.status(200).json(
     {   Status:1,
@@ -262,7 +262,7 @@ const deleteUser = asyncHandler(async (req,res) =>{
      return res.status(404).json(
         {
             Status:0,
-            Message:'No User found'
+            Message:'No User found or Login first'
         }
         )
    }
