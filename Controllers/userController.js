@@ -109,12 +109,13 @@ const verifyEmail = asyncHandler(async (req, res) => {
 const resendOTP = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     const otp = Math.floor(1000 + Math.random() * 9000);
-    await sendResetPasswordEmail(user.email, otp,req);
+    const verification= "confirm your email";
+    await sendResetPasswordEmail(user.email, otp,verification,req);
     user.otp = otp;
     user.emailverified = false;
     await user.save();
+    
     res.status(200).json(
-
         {
          Status:1,
          Message:"OTP sent successfully",       
@@ -124,6 +125,7 @@ const resendOTP = asyncHandler(async (req, res) => {
         last_name: user.lname,
         email_id: user.email,
         user_role: user.role,
+         is_email_verified: user.emailverified,
         otp:user.otp
     }
    }
