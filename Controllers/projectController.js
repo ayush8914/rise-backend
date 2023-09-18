@@ -24,9 +24,10 @@ const getProjectById = asyncHandler(async (req, res) => {
 //create project
 const createProject = asyncHandler(async (req, res) => {
     const {contractor_name, site_name, site_location} = req.body;
-
+    
     const userid = req.user._id;     //from auth middleware
-
+    
+    try{
     const project = new Project({
         userid,
         contractor_name,
@@ -40,6 +41,12 @@ const createProject = asyncHandler(async (req, res) => {
         info:createdProject
     }
         );
+  }catch(e){
+    res.status(404).json({
+        status:0,
+        Message:"Something went wrong try to create again"
+    })
+  }
 
 });
 
