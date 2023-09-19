@@ -51,17 +51,12 @@ const registerUser = asyncHandler(async (req, res) => {
     
     if(user){
         res.status(200).json(
-          {
+          { 
             Status : 1,
             Message: "Registration successful",
-           info: {
             user_id: user._id,
-            first_name: user.fname,
-            last_name: user.lname,
-            email_id: user.email,
-            user_role: user.role,
-            otp: user.otp
-        }
+            otp: user.otp,
+            UserToken: generateToken(user._id)
     }
         );
     }
@@ -182,11 +177,29 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findOne({email});
+    if(!user || !user.emailverified){
+          if(!user){
+            return res.status(200).json(
+                {
+                Status:0,
+                Message:"Email is not Registered"
+            }
+            );
+          }
+          if(!user.emailverified){
+            return res.status(200).json(
+                {
+                Status:2,
+                Message:"Email is not verified.Please verify your email"
+            }
+            );
+          }
+    }
     if(user && (await bcrypt.compare(password, user.password)) && user.emailverified){
         res.status(200).json(
             {
              Status:1,
-             Message:"Logged in successful",
+             Message:"Login successful",
            info: {
             user_id: user._id,
             first_name: user.fname,
