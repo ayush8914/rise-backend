@@ -27,7 +27,7 @@ const getProjectById = asyncHandler(async (req, res) => {
             );
     }
     else{
-        res.status(404).json(
+        res.status(200).json(
             {   Status:0,
                 Message: 'Project not found'
             });
@@ -56,7 +56,7 @@ const createProject = asyncHandler(async (req, res) => {
     }
         );
   }catch(e){
-    res.status(404).json({
+    res.status(200).json({
         Status:0,
         Message:"Something went wrong try to create again"
     })

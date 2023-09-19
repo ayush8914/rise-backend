@@ -15,7 +15,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const {fname , lname , email , password } = req.body;
 
     if(!fname || !lname || !email || !password){
-        return res.status(400).json(
+        return res.status(200).json(
             { 
             Status : 0,
             Message: "Please field all the fields" 
@@ -25,7 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const userExists = await User.findOne({email});
 
     if(userExists){
-        return res.status(400).json(
+        return res.status(200).json(
             { 
                 Status : 0,
                 Message: "Email already used"
@@ -66,14 +66,14 @@ const registerUser = asyncHandler(async (req, res) => {
         );
     }
     else{
-        return res.status(400).json({ error: 'Invaild user data' });
+        return res.status(200).json({ error: 'Invaild user data' });
     }
 });
 
 const verifyEmail = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     if(!user){
-        return res.status(404).json({
+        return res.status(200).json({
             Status:0,
             Message:"Please Register first"
         });
@@ -120,7 +120,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
 }
     else{
         // await User.findByIdAndDelete(user._id);
-        return res.status(400).json(
+        return res.status(200).json(
             {
             Status:0,
             Message: 'Invaild OTP' 
@@ -156,7 +156,7 @@ const resendOTP = asyncHandler(async (req, res) => {
    }
     );
 }catch(e){
-    return res.status(400).json(
+    return res.status(200).json(
         {
         Status:0,
         Message: 'Something went wrong try again' 
@@ -173,7 +173,7 @@ const loginUser = asyncHandler(async (req, res) => {
    const{email, password} = req.body;
 
     if(!email || !password){
-        return res.status(400).json(
+        return res.status(200).json(
             {   
                 Status:0,
                 Message: 'Please fill all the fields' 
@@ -199,7 +199,7 @@ const loginUser = asyncHandler(async (req, res) => {
         );
     }
     else{
-       return res.status(400).json(
+       return res.status(200).json(
         {   
             Status:0,
             Message:"Invalid email or password or email not verified"
@@ -218,7 +218,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       const user = await User.findById(req.user._id);
   
       if (!user) {
-        return res.status(404).json(
+        return res.status(200).json(
             {   
                 Status:0,
                 Message: 'User not found' 
@@ -228,7 +228,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
   
       
       if (!user.profilepic) {
-        return res.status(404).json(
+        return res.status(200).json(
             {   
                 Status:0,
                 Message: 'Profile picture not found' 
@@ -255,7 +255,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       );
     } catch (error) {
     //   console.error(error);
-      res.status(500).json(
+      res.status(200).json(
         {   Status:0,
             Message: 'Error in profile fetching' 
         }
@@ -277,7 +277,7 @@ const deleteUser = asyncHandler(async (req,res) =>{
     ); 
 }
    else{
-     return res.status(404).json(
+     return res.status(200).json(
         {
             Status:0,
             Message:'No User found or Login first'
@@ -296,7 +296,7 @@ const forgetpass = asyncHandler(async(req,res)=>{
         const user = await User.findOne({ email });
         
         if (!user) {
-          return res.status(404).json(
+          return res.status(200).json(
             {   
                 Status:0,
                 Message: 'User not found'
@@ -336,7 +336,7 @@ const changepass = asyncHandler(async (req, res) => {
     const newpassword = req.body.password;
     const confirmpassword = req.body.confirmpassword;
     if(newpassword !== confirmpassword){
-        return res.status(400).json(
+        return res.status(200).json(
             {   
                 Status:0,
                 Message: 'New password and confirm password does not match' 
@@ -360,7 +360,7 @@ const changepass = asyncHandler(async (req, res) => {
             }
             );
     }else{
-        return res.status(400).json(
+        return res.status(200).json(
             {   
                 Status:0,
                 Message: 'User not found' 
@@ -369,7 +369,7 @@ const changepass = asyncHandler(async (req, res) => {
     }
 }
     else{
-        return res.status(400).json(
+        return res.status(200).json(
             {   
                 Status : 0,
                 Message: 'All fields are mandatory'
@@ -401,7 +401,7 @@ const fileFilter = (req, file, cb) => {
         cb(new Error('Invalid file type'), false);
         }
         catch(e){
-            req.status(404).json({
+            req.status(200).json({
                 Status:0,
                 Message:"Only images are allowed"
             });
@@ -446,7 +446,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         const user = await User.findById(req.user._id);
 
         if (!user) {
-            return res.status(404).json(
+            return res.status(200).json(
                 {   
                     Status:0,
                     Message: 'User not found' 
@@ -459,13 +459,13 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
         upload.single('profilepic')(req, res, async (err) => {
             if (err instanceof multer.MulterError) {
-                return res.status(400).json(
+                return res.status(200).json(
                     {   Status:0,
                         Message: 'File upload error'
                     }
                     );
             } else if (err) {
-                return res.status(500).json(
+                return res.status(200).json(
                     {   
                         Status:0,
                         Message: 'Internal server error'
@@ -520,7 +520,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json(
+        res.status(200).json(
             {   
                 Status:0,
                 Message: 'Something went wrong. Profile not updated' 

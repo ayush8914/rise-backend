@@ -26,4 +26,5 @@ const createObservation = asyncHandler(async (req, res) => {
 });
 
 
+
 module.exports={createObservation}
