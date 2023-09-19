@@ -330,9 +330,8 @@ const forgetpass = asyncHandler(async(req,res)=>{
 
             {   
                 Status:1,
-                Message:'opt sent successfully',
-                pass_resetToken: user.resettoken,
-                token_valid : user.resettokentime
+                Message:'otp sent successfully',
+                user_id: user._id,
             }
 
             );
