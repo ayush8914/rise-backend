@@ -317,7 +317,7 @@ const forgetpass = asyncHandler(async(req,res)=>{
 
             {   
                 Status:1,
-                Message:'opt sent successfully. Valid for 5 mins',
+                Message:'opt sent successfully',
                 pass_resetToken: user.resettoken,
                 token_valid : user.resettokentime
             }
@@ -435,9 +435,7 @@ const upload = multer({
 //     }
 // });
 
-const tem = {
-    
-}
+
 
 const path = require('path');
 const fs = require('fs');
