@@ -53,10 +53,9 @@ const registerUser = asyncHandler(async (req, res) => {
         res.status(200).json(
           { 
             Status : 1,
-            Message: "Registration successful",
+            Message: "Otp sent to your email for verification",
             user_id: user._id,
             otp: user.otp,
-            UserToken: generateToken(user._id)
     }
         );
     }
@@ -86,7 +85,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
         res.status(200).json(
             {
             Status:1,
-            Message:"Email verified successfully",
+            Message:"Registration successful",
             info:{
             user_id: user._id,
             firsr_name: user.fname,
@@ -94,6 +93,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
             email_id: user.email,
             user_role: user.role,
             is_email_verified: user.emailverified,
+            UserToken: generateToken(user._id)
         }
     }
         );
@@ -181,7 +181,7 @@ const loginUser = asyncHandler(async (req, res) => {
           if(!user){
             return res.status(200).json(
                 {
-                Status:0,
+                Status:2,
                 Message:"Email is not Registered"
             }
             );
