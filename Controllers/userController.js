@@ -78,9 +78,13 @@ const verifyEmail = asyncHandler(async (req, res) => {
             Message:"Please Register first"
         });
     }
-    const {otp} = req.body;
+
+    const {otp, pass_req} = req.body;
+
     const exists = await User.findOne({email: user.email, otp: otp});
+    
     if(exists){
+        if(pass_req == 0){
         user.emailverified = true;
         // user.otp = null;
         await user.save();
@@ -98,9 +102,23 @@ const verifyEmail = asyncHandler(async (req, res) => {
         }
     }
         );
+    }else if(pass_req == 1){
+        res.status(200).json(
+                {
+                Status:1,
+                Message:"OTP verified successfully",
+        }
+            );
+    }else{
+        res.status(200).json(
+            {
+            Status:0,
+            Message:"flag not provided",
     }
+        );
+    }
+}
     else{
-
         // await User.findByIdAndDelete(user._id);
         return res.status(400).json(
             {
@@ -288,10 +306,10 @@ const forgetpass = asyncHandler(async(req,res)=>{
         
         // Generate a reset token and set an expiration time
         const resetToken =  Math.floor(1000 + Math.random() * 9000);
-        const resetExpires = Date.now() + 300000; // 5 min
+        // const resetExpires = Date.now() + 300000; // 5 min
         
-        user.resettoken = resetToken;
-        user.resettokentime = resetExpires;
+        user.otp = resetToken;
+        // user.resettokentime = resetExpires;
         
         await user.save();
         await sendResetPasswordEmail(email, resetToken,"reset your password",req);
@@ -310,10 +328,11 @@ const forgetpass = asyncHandler(async(req,res)=>{
 );
 
 
-const verifyOtp = asyncHandler(async (req, res) => {
+const changepass = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
-    const {otp} = req.body;
-    console.log(otp);
+    // const {otp} = req.body;
+    // console.log(otp);
+    if(req.body.password && req.body.confirmpassword){
     const newpassword = req.body.password;
     const confirmpassword = req.body.confirmpassword;
     if(newpassword !== confirmpassword){
@@ -327,9 +346,9 @@ const verifyOtp = asyncHandler(async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newpassword, salt);
    
-    const exists = await User.findOne({email: user.email, resettoken: otp});
-  
-    if(exists && user.resettokentime > Date.now() ){
+    const exists = await User.findOne({email: user.email});
+
+    if(exists){
         user.password = hashedPassword;
         user.resettoken = null;
         user.resettokentime = null;
@@ -340,12 +359,20 @@ const verifyOtp = asyncHandler(async (req, res) => {
                 newpassword: user.password
             }
             );
+    }else{
+        return res.status(400).json(
+            {   
+                Status:0,
+                Message: 'User not found' 
+            }
+            );
     }
+}
     else{
         return res.status(400).json(
             {   
                 Status : 0,
-                Message: 'Invaild OTP. Try again!'
+                Message: 'All fields are mandatory'
              }
             );
     }
@@ -507,4 +534,4 @@ function generateToken(id){
     return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: '30d'});
 }
 
-module.exports = { registerUser, loginUser, getUserProfile , verifyEmail, resendOTP,deleteUser, forgetpass,verifyOtp,updateUserProfile};
+module.exports = { registerUser, loginUser, getUserProfile , verifyEmail, resendOTP,deleteUser, forgetpass,changepass,updateUserProfile};
