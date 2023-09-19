@@ -467,7 +467,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         }
 
         const previousProfilePic = user.profilepic;
-
+        
 
         upload.single('profilepic')(req, res, async (err) => {
             if (err instanceof multer.MulterError) {
@@ -488,7 +488,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
             if (req.file) {
                 user.profilepic = req.file.filename;
            
-                if (previousProfilePic != null) {
+                if (previousProfilePic != null && previousProfilePic != 'generaluserpic.png') {
                     const parentDirectory = path.dirname(__dirname);
                     const previousImagePath = path.join(parentDirectory, 'public/userprofiles', previousProfilePic);
                     console.log(previousImagePath);
