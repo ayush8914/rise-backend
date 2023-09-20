@@ -14,7 +14,7 @@ router.route('/verifyemail/:id').post(verifyEmail);
 router.route('/resendotp/:id').post(resendOTP);
 
 //delete user
-router.route('/deleteuser',protect,deleteUser)
+router.delete('/deleteuser',protect,deleteUser)
 
 
 //forgot password
