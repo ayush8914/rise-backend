@@ -280,10 +280,11 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 //delete user
 const deleteUser = asyncHandler(async (req,res) =>{
-   const user = await User.findById(req.params.id);
+   const user = await User.findById(req.user._id);
    if(user && user.emailverified){
-   await User.findByIdAndDelete(req.params.id);
+   await User.findByIdAndDelete(req.user._id);
    res.status(200).json(
+    
     {   Status:1,
         Message:'Account removed successfully'
     }

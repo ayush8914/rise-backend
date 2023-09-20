@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     role: { type: String, required: true , default: "user"},
     otp: { type: String, required: false },
     resettoken : {type:String, required: false, default: undefined},
-    resettokentime : {type:String, required: false, default: undefined} 
+    resettokentime : {type:String, required: false, default: undefined}, 
 }, { timestamps: true});
 
 module.exports = mongoose.model("users", userSchema);

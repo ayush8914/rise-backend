@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { registerUser, loginUser, getUserProfile,verifyEmail,resendOTP,deleteUser,forgetpass, changepass,updateUserProfile} = require('../Controllers/userController');
+const { registerUser, loginUser, getUserProfile,verifyEmail,resendOTP,deleteUser,forgetpass, changepass,updateUserProfile,logoutUser} = require('../Controllers/userController');
 const { protect } = require('../middlewares/auth');
 
 
@@ -14,7 +14,7 @@ router.route('/verifyemail/:id').post(verifyEmail);
 router.route('/resendotp/:id').post(resendOTP);
 
 //delete user
-router.route('/deleteuser/:id').delete(deleteUser)
+router.route('/deleteuser',protect,deleteUser)
 
 
 //forgot password
@@ -30,5 +30,8 @@ router.get('/profile', protect,getUserProfile);
 
 //update user profile
 router.put('/updateprofile', protect, updateUserProfile);
+
+//Logout user 
+// router.get('/logout', protect, logoutUser);
 
 module.exports = router;
