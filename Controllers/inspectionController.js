@@ -48,7 +48,6 @@ const upload = multer({ storage: storage , fileFilter: fileFilter});
 
 //create inspection
 const createInspection = asyncHandler(async (req, res) => {
-
     const projectid = req.params.id;
     const project = await Project.findById(projectid);
     if(!project){

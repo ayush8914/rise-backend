@@ -459,7 +459,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         console.log(user);
-        if (!user) {
+        if (!user) { 
             return res.status(200).json(
                 {   
                     Status:0,
