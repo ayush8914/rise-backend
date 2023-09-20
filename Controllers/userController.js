@@ -411,6 +411,7 @@ const fileFilter = (req, file, cb) => {
     } else {
 
         try{ 
+            // console.log('noit image');
         cb(new Error('Invalid file type'), false);
         }
         catch(e){
@@ -426,8 +427,8 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ 
     storage: storage,
-    fileFilter: fileFilter,
-    limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
+    // fileFilter: fileFilter,
+    // limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
 });
 
 //update user profile
@@ -457,7 +458,7 @@ const fs = require('fs');
 const updateUserProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
-
+        console.log(user);
         if (!user) {
             return res.status(200).json(
                 {   
@@ -481,6 +482,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
                 return res.status(200).json(
                     {   
                         Status:0,
+                        // error : err,
                         Message: 'Internal server error'
                      }
                     );
@@ -488,7 +490,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
             if (req.file) {
                 user.profilepic = req.file.filename;
-           
+                console.log(user.profilepic);
                 if (previousProfilePic != null && previousProfilePic != 'generaluserpic.png') {
                     const parentDirectory = path.dirname(__dirname);
                     const previousImagePath = path.join(parentDirectory, 'public/userprofiles', previousProfilePic);
