@@ -97,10 +97,19 @@ const createInspection = asyncHandler(async (req, res) => {
             const createdInspection = await inspection.save();
          
     if(createdInspection){
-    res.status(200).json(createdInspection);
+    res.status(200).json({
+        Status:1,
+        Message:"New Inspection Added",
+        info:createdInspection
+    });
     }
     else{
-        res.status(400).json({error: 'Invalid inspection data'});
+        res.status(200).json(
+            {   
+                Status:0,
+                Message: 'Invalid inspection data'
+            }
+            );
     }
           });
 });
