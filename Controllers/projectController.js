@@ -4,7 +4,7 @@ const Project = require('../Models/project');
 
 //get all projects
 const getProjects = asyncHandler(async (req, res) => {
-    const projects = await Project.find({});
+    const projects = await  Project.find({}).sort({ createdAt: -1 });
     res.status(200).json({
         Status:1,
         Message: "Successful",
