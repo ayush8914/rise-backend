@@ -348,15 +348,8 @@ const changepass = asyncHandler(async (req, res) => {
     if(req.body.password && req.body.confirmpassword){
     const newpassword = req.body.password;
     const confirmpassword = req.body.confirmpassword;
-    if(newpassword !== confirmpassword){
-        return res.status(200).json(
-            {   
-                Status:0,
-                Message: 'New password and confirm password does not match' 
-            }
-            );
-    }
-    if(newpassword == user.password){
+   
+    if(await bcrypt.compare(newpassword, user.password)){
         return res.status(200).json(
             {   
                 Status:0,

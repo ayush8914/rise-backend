@@ -40,7 +40,7 @@ router.delete('/deleteimages', (req, res) => {
     res.status(200).json({success: 1, message: 'Images deleted successfully'});
 });
 
-
+router.post('/:id', createInspection);
 //get short details of all inspections
 router.get('/', getInspections);
 
@@ -50,7 +50,7 @@ router.get('/:id', getInspectionById);
 
 
 //create inspection   -- project id is passed in url
-router.post('/:id', createInspection);
+
 
 
 module.exports = router;
