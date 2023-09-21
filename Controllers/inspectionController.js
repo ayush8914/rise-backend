@@ -44,7 +44,9 @@ const fileFilter = (req, file, cb) => {
 
 
 // Create multer instance with storage options
-const upload = multer({ storage: storage , fileFilter: fileFilter});
+const upload = multer({ storage: storage , 
+    // fileFilter: fileFilter
+});
 
 //create inspection
 const createInspection = asyncHandler(async (req, res) => {
@@ -52,7 +54,7 @@ const createInspection = asyncHandler(async (req, res) => {
     const project = await Project.findById(projectid);
     if(!project){
 
-        return res.status(404).json({error: 'Project not found'});
+        return res.status(200).json({error: 'Project not found'});
     }
       
         upload.fields([
@@ -60,7 +62,7 @@ const createInspection = asyncHandler(async (req, res) => {
             { name: 'bespokedesigns', maxCount: 5 },
         ])(req, res, async (err) => {
             if (err) {
-                return res.status(400).json({ error: 'File upload error' });
+                return res.status(200).json({ error: 'File upload error' });
             }else{
                 console.log(req.files);
             }
