@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Project = require('../Models/project');
-
+const Inspection = require('../Models/inspection');
 
 //get all projects
 const getProjects = asyncHandler(async (req, res) => {
@@ -18,11 +18,13 @@ const getProjects = asyncHandler(async (req, res) => {
 const getProjectById = asyncHandler(async (req, res) => {
 
     const project = await Project.findById(req.params.id);
+    const inspections = await Inspection.find({projectid: req.params.id});
     if(project){
         res.status(200).json({
            Status:1,
            Message : "Fetched successfully",
-           info: project
+           info: project,
+           inspections: inspections
         }
             );
     }
