@@ -114,7 +114,7 @@ const createInspection = asyncHandler(async (req, res) => {
     }
           });
 });
-
+const t = {}
 
 
 //get inspection
