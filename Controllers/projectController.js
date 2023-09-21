@@ -16,9 +16,24 @@ const getProjects = asyncHandler(async (req, res) => {
 
 //get project by id
 const getProjectById = asyncHandler(async (req, res) => {
+    
+    function formateddate(inputDate){
+       const day = inputDate.getDate();
+const year = inputDate.getFullYear().toString();
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const month = monthNames[inputDate.getMonth()];
+return `${day} ${month}, ${year}`;
 
+    }
     const project = await Project.findById(req.params.id);
-    const inspections = await Inspection.find({projectid: req.params.id});
+    var inspections = await Inspection.find({projectid: req.params.id});
+    if(inspections){
+        inspections = inspections.map( inspection =>  ({
+            name:inspection.inspector_name,
+            date : formateddate(inspection.Date)
+    
+            }));
+    }
     if(project){
         res.status(200).json({
            Status:1,
