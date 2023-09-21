@@ -114,4 +114,8 @@ const createInspection = asyncHandler(async (req, res) => {
 });
 
 
+
+//get inspection
+// const getInspections
+
 module.exports={getInspections, getInspectionById, createInspection}

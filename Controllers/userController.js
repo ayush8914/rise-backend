@@ -181,7 +181,7 @@ const loginUser = asyncHandler(async (req, res) => {
           if(!user){
             return res.status(200).json(
                 {
-                Status:2,
+                Status:0,
                 Message:"Email is not Registered"
             }
             );
@@ -286,7 +286,7 @@ const deleteUser = asyncHandler(async (req,res) =>{
    res.status(200).json(
     
     {   Status:1,
-        Message:'Account removed successfully'
+        Message:'Account deleted successfully'
     }
     ); 
 }
@@ -353,6 +353,14 @@ const changepass = asyncHandler(async (req, res) => {
             {   
                 Status:0,
                 Message: 'New password and confirm password does not match' 
+            }
+            );
+    }
+    if(newpassword == user.password){
+        return res.status(200).json(
+            {   
+                Status:0,
+                Message: 'New password and old password cannot be same' 
             }
             );
     }
