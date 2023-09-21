@@ -29,9 +29,10 @@ return `${day} ${month}, ${year}`;
     var inspections = await Inspection.find({projectid: req.params.id});
     if(inspections){
         inspections = inspections.map( inspection =>  ({
+            inspectionid: inspection._id,
             name:inspection.inspector_name,
             date : formateddate(inspection.Date)
-    
+            
             }));
     }
     if(project){
