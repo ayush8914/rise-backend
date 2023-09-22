@@ -369,7 +369,7 @@ const changepass = asyncHandler(async (req, res) => {
         await user.save();
         res.status(200).json(
             {   Status:1,
-                Message:'Password changed successfully',
+                Message:'Reset password successful',
                 newpassword: user.password
             }
             );

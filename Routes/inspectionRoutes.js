@@ -1,6 +1,6 @@
 const experss = require('express');
 const router = experss.Router();
-const { createInspection, getInspectionById, getInspections } = require('../Controllers/inspectionController');
+const { createInspection, getInspectionById, getInspections,updateInspectionById } = require('../Controllers/inspectionController');
 const {upload} = require('../middlewares/imageupload');
 const fs = require('fs');
 const path = require('path');
@@ -26,6 +26,7 @@ router.delete('/deleteimage', (req, res) => {
 });
 
 router.delete('/deleteimages', (req, res) => {
+
     const images = req.body.images; 
     const parentDirectory = path.dirname(__dirname);
     // console.log(images);
@@ -48,8 +49,8 @@ router.get('/', getInspections);
 //get inspection by id
 router.get('/:id', getInspectionById);
 
-
-//create inspection   -- project id is passed in url
+//update inspection by id
+router.put('/:id', updateInspectionById);
 
 
 

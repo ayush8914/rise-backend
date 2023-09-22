@@ -62,8 +62,8 @@ const createInspection = asyncHandler(async (req, res) => {
     }
         
         upload.fields([
-            { name: 'referenceImages', maxCount: 5 }, // You can specify the maximum number of files allowed
-            { name: 'bespokedesigns', maxCount: 5 },
+            { name: 'referenceImages', maxCount: 10 }, // You can specify the maximum number of files allowed
+            { name: 'bespokedesigns', maxCount: 10 },
         ])(req, res, async (err) => {
             if (err) {
                 return res.status(200).json(
@@ -122,11 +122,47 @@ const createInspection = asyncHandler(async (req, res) => {
           });
 });
 
-// const t = {}
+//update inspection by id
+const updateInspectionById = asyncHandler(async (req, res) => {
+    const inspection = await Inspection.findById(req.params.id);
+    
+    if(!inspection){
+        return res.status(200).json(
+            {   
+                Status:0,
+                Message: 'Inspection not found'
+            }
+            );
+    }
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    var imageurl;
+    upload.fields([
+        { name: 'referenceImages', maxCount: 10 }, // You can specify the maximum number of files allowed
+        { name: 'bespokedesigns', maxCount: 10 },
+    ])(req, res, async (err) => {
+        
+        inspection.Date = req.body.Date || inspection.Date;
+        inspection.starttime = req.body.starttime || inspection.starttime;
+        inspection.inspector_name = req.body.inspector_name || inspection.inspector_name;
+        inspection.inspector_role = req.body.inspector_role || inspection.inspector_role;
+        inspection.scaffold_description = req.body.scaffold_description || inspection.scaffold_description;
+        const existingImages = inspection.referenceImages || [];
+        inspection.referenceImages = req.files['referenceImages']?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename ) || [];
+        inspection.referenceImages = existingImages.concat(inspection.referenceImages);
+        const existingBespokeDesigns = inspection.bespokedesigns || [];
+        inspection.bespokedesigns = req.files['bespokedesigns']?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename ) || [];
+        inspection.bespokedesigns = existingBespokeDesigns.concat(inspection.bespokedesigns);
 
+        inspection.statutory_inspection = req.body.statutory_inspection || inspection.statutory_inspection;
+        inspection.reason_for_inspection = req.body.reason_for_inspection || inspection.reason_for_inspection;
+        inspection.inspection_date = req.body.inspection_date || inspection.inspection_date;
+        const updatedInspection = await inspection.save();
+       return res.status(200).json(
+            updatedInspection
+            );
+    }
+    );
+    // res.status(200).json(inspection);
+});
 
-
-//get inspection
-// const getInspections
-
-module.exports={getInspections, getInspectionById, createInspection}
+module.exports={getInspections, getInspectionById, createInspection,updateInspectionById}
