@@ -1,29 +1,43 @@
 const asyncHandler = require('express-async-handler');
-const Category = require('../Models/categories');
+
 const {Observation}  = require("../Models/observations")
+
 
 //create observation
 const createObservation = asyncHandler(async (req, res) => {
     const inspectionid = req.params.id;
-    console.log(req.body);
-    const {category, IssueIdentified,observations } = req.body;
-    const observation1 =new Category( {
-        inspectionid,
-        category,
-        IssueIdentified
-    });
-    const newobservation =await observation1.save();
+    const category = req.body.category;
 
-    if(IssueIdentified){
-        observations.forEach(element => {
-            const t= new Observation(element);
-            t.save();
-            newobservation.observations.push(t);
-        });   
-        await newobservation.save();
+    const observationExists = await Observation.findOne({inspectionid: inspectionid, category: category}).countDocuments();
+    if(observationExists > 0){
+        return res.status(200).json({
+            Status: 0,
+            Message: 'Observation already exists'
+        });
     }
-    res.status(200).json(newobservation);
+
+    const observation = new Observation({
+        inspectionid: inspectionid,
+        category: req.body.category,
+        isissue: req.body.isissue,
+        observations: req.body.observations
+    });
+
+    const createdObservation = await observation.save();
+    if(createdObservation){
+        return res.status(201).json({
+            Status: 1,
+            Message: 'Observation created successfully',
+            info: createdObservation
+        });
+    }else{
+        return res.status(500).json({
+            Status: 0,
+            Message: 'something went wrong.please try again'
+        });
+}
 });
+
 
 
 

@@ -14,6 +14,7 @@ const inspectionSchema = new mongoose.Schema({
     statutory_inspection : { type: Boolean, required: false },     //is it statutory   -> required is false because it is not mandatory
     reason_for_inspection : { type: String, required: false },      //reason for statutory inspection -> required is false because it is not mandatory
     inspection_date : { type: Date, required: false },
+    // fundations: [{type:Object, required: false}],
    //last inspection date  -> required is false because it is not mandatory
 });
 

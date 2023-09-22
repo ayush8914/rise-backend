@@ -2,6 +2,10 @@ const asyncHandler = require('express-async-handler');
 const Inspection = require('../Models/inspection');
 const Project = require('../Models/project');   
 
+const {Observation}  = require("../Models/observations")
+const Lift = require('../Models/lifts');
+
+
 //get all inspections
 const getInspections = asyncHandler(async (req, res) => {
     const inspections = await Inspection.find({});
@@ -17,6 +21,37 @@ const getInspectionById = asyncHandler(async (req, res) => {
     }
     else{
         return res.status(404).json({error: 'Inspection not found'});
+    }
+});
+
+
+//get all details of inspection by id
+const getInspection = asyncHandler(async (req, res) => {
+    const inspection = await Inspection.findById(req.params.id);
+    if(inspection){
+        
+        const Foundations = await Observation.findOne({inspectionid: req.params.id, category: 'foundations'});
+        const Sole_boards = await Observation.findOne({inspectionid: req.params.id, category: 'sole_boards'});
+        const Kicker_lifts = await Observation.findOne({inspectionid: req.params.id, category: 'kicker_lifts'});
+        const lifts = await Lift.findOne({inspectionid: req.params.id, category: 'lifts'});
+
+        return res.status(200).json({
+            Status:1,
+            Message: 'Inspection details',
+            info: inspection,
+            Foundations: Foundations.isissue ? Foundations : undefined,
+            Sole_boards: Sole_boards?.isissue ? Sole_boards : undefined,
+            Kicker_lifts: Kicker_lifts?.isissue ? Kicker_lifts : undefined,
+            lifts: lifts?.isissue ? lifts : undefined,
+        });
+    }
+    else{
+        return res.status(200).json(
+            {
+                Status:0,
+                Message: 'Inspection not found'
+            }
+            );
     }
 });
 
@@ -158,11 +193,15 @@ const updateInspectionById = asyncHandler(async (req, res) => {
         inspection.inspection_date = req.body.inspection_date || inspection.inspection_date;
         const updatedInspection = await inspection.save();
        return res.status(200).json(
-            updatedInspection
+           {
+            Status:1,
+            Message: 'Inspection updated successfully',
+           info: updatedInspection
+           }
             );
     }
     );
     // res.status(200).json(inspection);
 });
 
-module.exports={getInspections, getInspectionById, createInspection,updateInspectionById}
+module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection}
