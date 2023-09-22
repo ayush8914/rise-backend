@@ -6,17 +6,17 @@ const Project = require('../Models/project');
 const getInspections = asyncHandler(async (req, res) => {
     const inspections = await Inspection.find({});
     
-    res.status(200).json(inspections);
+   return res.status(200).json(inspections);
 });
 
 //get inspection by id
 const getInspectionById = asyncHandler(async (req, res) => {
     const inspection = await Inspection.findById(req.params.id);
     if(inspection){
-        res.status(200).json(inspection);
+       return res.status(200).json(inspection);
     }
     else{
-        res.status(404).json({error: 'Inspection not found'});
+        return res.status(404).json({error: 'Inspection not found'});
     }
 });
 
