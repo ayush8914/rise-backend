@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const Project = require('../Models/project');
 const Inspection = require('../Models/inspection');
+const multer = require('multer');
+const User = require('../Models/user');
 
 //get all projects
 const getProjects = asyncHandler(async (req, res) => {
@@ -53,34 +55,101 @@ return `${day} ${month}, ${year}`;
 });
 
 
+// Set up storage for multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './public/projects'); // Destination folder
+    },
+    filename: (req, file, cb) => {
+        
+        cb(null, Date.now() + file.originalname);
+    },
+});
+
+
+const upload = multer({ storage: storage});
+
 //create project
 const createProject = asyncHandler(async (req, res) => {
-    const {contractor_name, site_name, site_location} = req.body;
-    
-    const userid = req.user._id;     //from auth middleware
-    
-    try{
-    const project = new Project({
-        userid,
-        contractor_name,
-        site_name,
-        site_location
-    });
-    const createdProject = await project.save();
-    res.status(200).json({
-        Status:1,
-        Message:"New Project Added",
-        info:createdProject
-    }
-        );
-  }catch(e){
-    res.status(200).json({
-        Status:0,
-        Message:"Something went wrong try to create again"
-    })
-  }
+    try {
+        console.log(req.user._id);
+        const userid = req.user._id;
+        const user = await User.findById(req.user._id);
+        console.log(user);
+        if (!user) { 
+            return res.status(200).json(
+                {   
+                    Status:0,
+                    Message: 'User not found' 
+                }
+                );
+        }
 
+        // const previousProfilePic = user.profilepic;
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        var imageurl;
+        upload.single('image')(req, res, async (err) => {
+            if (err instanceof multer.MulterError) {
+                return res.status(200).json(
+                    {   Status:0,
+                        Message: 'File upload error'
+                    }
+                    );
+            } else if (err) {
+                return res.status(200).json(
+                    {   
+                        Status:0,
+                        // error : err,
+                        Message: 'Internal server error'
+                     }
+                    );
+            }
+
+            if (req.file) {
+
+            const { contractor_name, site_name, site_location} = req.body;
+            
+            
+            const project = new Project({
+                        userid,
+                        contractor_name,
+                        site_name,
+                        site_location,
+                        image: baseUrl+ "/projects/"+ req.file.filename
+                    });
+
+
+            const createdProject = await project.save();
+                res.status(200).json({
+                    Status:1,
+                    Message:"New Project Added",
+                    info:createdProject
+                }
+                    );
+
+            
+            }
+            else{
+                res.status(200).json(
+                    {   
+                        Status:0,
+                        Message: 'Image not found'
+                     }
+                    );
+            }
+
+        });
+    } catch (error) {
+        res.status(200).json(
+            {
+                Status:0,
+                Message: 'Something went wrong try to create again'
+            }
+            );
+    }
 });
+
+
 
 
 module.exports={getProjects, getProjectById, createProject}

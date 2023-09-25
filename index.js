@@ -31,6 +31,8 @@ app.use('/api', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/inspections', inspectionRoutes);
 app.use('/api/observations', observationRoutes);
+app.use('/api/admin', require('./Routes/adminRoutes'));
+
 
 
 const start = async () => {

@@ -5,7 +5,9 @@ const projectSchema = new mongoose.Schema({
     userid : { type: mongoose.Schema.Types.ObjectId, ref: "users" }, //ref to particular user so we can easily get the projects of that user
     contractor_name: { type: String, required: true },     //contractor name
     site_name: { type: String, required: true },           //site name
-    site_location: { type: String, required: true },       //site location
+    site_location: { type: String, required: true }, 
+    image: { type: String, required: true}
+          //site location
 }, { timestamps: true});
 
 module.exports = mongoose.model("projects", projectSchema);
