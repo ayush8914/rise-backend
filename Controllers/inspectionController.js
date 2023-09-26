@@ -17,7 +17,12 @@ const getInspections = asyncHandler(async (req, res) => {
 const getInspectionById = asyncHandler(async (req, res) => {
     const inspection = await Inspection.findById(req.params.id);
     if(inspection){
-       return res.status(200).json(inspection);
+       return res.status(200).json({
+        Status:1,
+        Message:'Inspection fetched successfully',
+        info:inspection
+       }
+        );
     }
     else{
         return res.status(404).json({error: 'Inspection not found'});
