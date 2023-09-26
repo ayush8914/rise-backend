@@ -12,14 +12,31 @@ const getProjects = asyncHandler(async (req, res) => {
         Message: "Successful",
         info:projects
        }
-        );
+    );
+});
+
+//get contractor name and project ids of all projects
+const getShortProjects = asyncHandler(async (req, res) => {
+    var projects = await  Project.find({}).sort({ createdAt: -1 });
+    if(projects){
+        projects = projects.map( project =>  ({
+            projectid: project._id,
+            contractor_name:project.contractor_name
+            }));
+    }
+    res.status(200).json({
+        Status:1,
+        Message: "Fetched successfully",
+        info:projects
+       }
+    );
 });
 
 
 //get project by id
 const getProjectById = asyncHandler(async (req, res) => {
     
-    function formateddate(inputDate){
+       function formateddate(inputDate){
        const day = inputDate.getDate();
 const year = inputDate.getFullYear().toString();
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -108,8 +125,6 @@ const createProject = asyncHandler(async (req, res) => {
             if (req.file) {
 
             const { contractor_name, site_name, site_location} = req.body;
-            
-            
             const project = new Project({
                         userid,
                         contractor_name,
@@ -125,7 +140,7 @@ const createProject = asyncHandler(async (req, res) => {
                     Message:"New Project Added",
                     info:createdProject
                 }
-                    );
+             );
 
             
             }
@@ -145,11 +160,10 @@ const createProject = asyncHandler(async (req, res) => {
                 Status:0,
                 Message: 'Something went wrong try to create again'
             }
-            );
-    }
+        );
+     }
 });
 
 
 
-
-module.exports={getProjects, getProjectById, createProject}
+module.exports={getProjects, getProjectById, createProject,getShortProjects}

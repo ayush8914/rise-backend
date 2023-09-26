@@ -8,8 +8,7 @@ const Lift = require('../Models/lifts');
 
 //get all inspections
 const getInspections = asyncHandler(async (req, res) => {
-    const inspections = await Inspection.find({});
-    
+   const inspections = await Inspection.find({}); 
    return res.status(200).json(inspections);
 });
 
@@ -119,6 +118,7 @@ const createInspection = asyncHandler(async (req, res) => {
                 inspector_name,
                 inspector_role,
                 scaffold_description,
+                option,
                 statutory_inspection = false,
                 reason_for_inspection = undefined,
                 inspection_date = undefined} = req.body;
@@ -135,6 +135,7 @@ const createInspection = asyncHandler(async (req, res) => {
                 inspector_role ,
                 scaffold_description ,
                 referenceImages : referenceImages?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename ),
+                option,
                 bespokedesigns : bespokedesigns?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename),
                 statutory_inspection,
                 reason_for_inspection,
@@ -188,6 +189,7 @@ const updateInspectionById = asyncHandler(async (req, res) => {
         inspection.scaffold_description = req.body.scaffold_description || inspection.scaffold_description;
         const existingImages = inspection.referenceImages || [];
         inspection.referenceImages = req.files['referenceImages']?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename ) || [];
+        inspection.option = req.body.option || inspection.option;
         inspection.referenceImages = existingImages.concat(inspection.referenceImages);
         const existingBespokeDesigns = inspection.bespokedesigns || [];
         inspection.bespokedesigns = req.files['bespokedesigns']?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename ) || [];
