@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const inspectionSchema = new mongoose.Schema({
     //ref to project
     projectid: { type: mongoose.Schema.Types.ObjectId, ref: "projects" }, //ref to particular project so we can easily get the inspection reports of that project
+    reference: { type: String, required: true },            //reference of inspection
     Date : { type: Date, required: true },                   //date of inspection
     starttime: { type: String, required: true },            //start time of inspection
     inspector_name : { type: String, required: true },        //name of inspector

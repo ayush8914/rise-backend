@@ -13,18 +13,49 @@ const getInspections = asyncHandler(async (req, res) => {
 });
 
 //get inspection by id
+// const getInspectionById = asyncHandler(async (req, res) => {
+//     var inspection = await Inspection.findById(req.params.id);
+//     if(inspection != null){
+//         console.log(inspection.Date.toISOString().split('T')[0]);
+//         inspection.Date = inspection.Date.toISOString().split('T')[0];
+//        return res.status(200).json({
+//         Status:1,
+//         Message:'Inspection fetched successfully',
+//         info:inspection,
+//        }
+//         );
+//     }
+//     else{
+//         return res.status(404).json({error: 'Inspection not found'});
+//     }
+// });
+
 const getInspectionById = asyncHandler(async (req, res) => {
-    const inspection = await Inspection.findById(req.params.id);
-    if(inspection){
-       return res.status(200).json({
-        Status:1,
-        Message:'Inspection fetched successfully',
-        info:inspection
-       }
-        );
-    }
-    else{
-        return res.status(404).json({error: 'Inspection not found'});
+    try {
+        const inspection = await Inspection.findById(req.params.id);
+        if (inspection) {
+            
+            const isoDate = inspection.Date.toISOString().split('T')[0];
+            
+   
+            const [year, month, day] = isoDate.split('-');
+
+ 
+            const formattedDate = `${day}-${month}-${year}`;
+
+            return res.status(200).json({
+                Status: 1,
+                Message: 'Inspection fetched successfully',
+                info: {
+                    ...inspection.toObject(),
+                    Date: formattedDate,
+                },
+            });
+        } else {
+            return res.status(404).json({ error: 'Inspection not found' });
+        }
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal server error' });
     }
 });
 
@@ -83,9 +114,7 @@ const fileFilter = (req, file, cb) => {
 
 
 // Create multer instance with storage options
-const upload = multer({ storage: storage 
-    // fileFilter: fileFilter
-});
+const upload = multer({ storage: storage });
 
 //create inspection
 const createInspection = asyncHandler(async (req, res) => {
@@ -115,6 +144,7 @@ const createInspection = asyncHandler(async (req, res) => {
             }
             const {Date ,
                 starttime,
+                reference,
                 inspector_name,
                 inspector_role,
                 scaffold_description,
@@ -131,6 +161,7 @@ const createInspection = asyncHandler(async (req, res) => {
                 projectid,
                 Date ,
                 starttime ,
+                reference,
                 inspector_name ,
                 inspector_role ,
                 scaffold_description ,
@@ -175,6 +206,7 @@ const updateInspectionById = asyncHandler(async (req, res) => {
             }
             );
     }
+
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     var imageurl;
     upload.fields([
@@ -184,6 +216,7 @@ const updateInspectionById = asyncHandler(async (req, res) => {
         
         inspection.Date = req.body.Date || inspection.Date;
         inspection.starttime = req.body.starttime || inspection.starttime;
+        inspection.reference = req.body.reference || inspection.reference;
         inspection.inspector_name = req.body.inspector_name || inspection.inspector_name;
         inspection.inspector_role = req.body.inspector_role || inspection.inspector_role;
         inspection.scaffold_description = req.body.scaffold_description || inspection.scaffold_description;
