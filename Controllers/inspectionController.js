@@ -59,6 +59,8 @@ const getInspectionById = asyncHandler(async (req, res) => {
     }
 });
 
+const temp={}
+
 
 //get all details of inspection by id
 const getInspection = asyncHandler(async (req, res) => {
