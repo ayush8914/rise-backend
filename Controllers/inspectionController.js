@@ -312,6 +312,7 @@ const updateInspectionById = asyncHandler(async (req, res) => {
 });
 
 
+
 //add options to inspection
 const addOptions = asyncHandler(async (req, res) => {
     try{
@@ -452,5 +453,7 @@ const deleteOption = asyncHandler(async (req, res) => {
     }
 }
 );
+
+const abx={};
 
 module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption}
