@@ -165,7 +165,7 @@ const createInspection = asyncHandler(async (req, res) => {
                 statutory_inspection = false,
                 reason_for_inspection = undefined,
                 inspection_date = undefined} = req.body;
-                
+
 
                 //also can be done from the frontend
                 if(!Date || !starttime || !reference || !contractor_name || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date ){
@@ -273,11 +273,16 @@ const updateInspectionById = asyncHandler(async (req, res) => {
 
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     var imageurl;
+    
     upload.fields([
         { name: 'referenceImages', maxCount: 10 }, // You can specify the maximum number of files allowed
         { name: 'bespokedesigns', maxCount: 10 },
     ])(req, res, async (err) => {
-        
+const parts = req.body.Date.split("/");
+const formattedDateStr = `${parts[1]}/${parts[0]}/${parts[2]}`;
+
+console.log(formattedDateStr); // Output: "09/29/2023"
+
         inspection.Date = req.body.Date || inspection.Date;
         inspection.starttime = req.body.starttime || inspection.starttime;
         inspection.reference = req.body.reference || inspection.reference;
