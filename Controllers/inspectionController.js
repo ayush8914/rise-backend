@@ -9,7 +9,11 @@ const Lift = require('../Models/lifts');
 //get all inspections
 const getInspections = asyncHandler(async (req, res) => {
    const inspections = await Inspection.find({}); 
-   return res.status(200).json(inspections);
+   return res.status(200).json({
+    Status:1,
+    Message:'Inspections fetched successfully',
+    info:inspections
+});
 });
 
 //get inspection by id
@@ -52,10 +56,14 @@ const getInspectionById = asyncHandler(async (req, res) => {
                 },
             });
         } else {
-            return res.status(404).json({ error: 'Inspection not found' });
+            return res.status(200).json({ 
+                Status:0,
+                Message: 'Inspection not found' });
         }
     } catch (error) {
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(200).json({ 
+            Status:0,
+            Message: 'Internal server error' });
     }
 });
 
