@@ -45,7 +45,7 @@ return `${day} ${month}, ${year}`;
 
     }
     const project = await Project.findById(req.params.id);
-    var inspections = await Inspection.find({projectid: req.params.id}).sort({ createdAt: -1 });
+    var inspections = await Inspection.find({projectid: req.params.id}).sort({  createdAt: -1 });
     console.log(inspections);
     if(inspections){
         inspections = inspections.map( inspection =>  ({

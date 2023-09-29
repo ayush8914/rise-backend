@@ -46,7 +46,7 @@ const getInspectionById = asyncHandler(async (req, res) => {
             const [year, month, day] = isoDate.split('-');
 
  
-            const formattedDate = `${day}-${month}-${year}`;
+            const formattedDate = `${day}/${month}/${year}`;
 
             return res.status(200).json({
                 Status: 1,
