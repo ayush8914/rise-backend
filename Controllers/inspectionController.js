@@ -253,10 +253,13 @@ const createInspection = asyncHandler(async (req, res) => {
             );
     }
           });
+
+
 });
 
 //update inspection by id
 const updateInspectionById = asyncHandler(async (req, res) => {
+    console.time('start');
     const inspection = await Inspection.findById(req.params.id);
     
     if(!inspection){
@@ -294,6 +297,7 @@ const updateInspectionById = asyncHandler(async (req, res) => {
         inspection.reason_for_inspection = req.body.reason_for_inspection || inspection.reason_for_inspection;
         inspection.inspection_date = req.body.inspection_date || inspection.inspection_date;
         const updatedInspection = await inspection.save();
+        console.timeEnd('end');
        return res.status(200).json(
            {
             Status:1,
@@ -301,6 +305,7 @@ const updateInspectionById = asyncHandler(async (req, res) => {
            info: updatedInspection
            }
             );
+
     }
     );
     // res.status(200).json(inspection);

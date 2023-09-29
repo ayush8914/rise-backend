@@ -45,13 +45,12 @@ return `${day} ${month}, ${year}`;
 
     }
     const project = await Project.findById(req.params.id);
-    var inspections = await Inspection.find({projectid: req.params.id});
+    var inspections = await Inspection.find({projectid: req.params.id}).sort({ createdAt: -1 });
     if(inspections){
         inspections = inspections.map( inspection =>  ({
             inspectionid: inspection._id,
             name:inspection.inspector_name,
-            date : formateddate(inspection.Date)
-            
+            date : formateddate(inspection.Date) 
             }));
     }
     if(project){

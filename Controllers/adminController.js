@@ -11,7 +11,7 @@ const setfields = asyncHandler(async (req, res) => {
         cateconfig1.category.push({heading, 
             subheading: subheading.map(name => ({ name })),
         });
-  
+        
         await cateconfig1.save();
         return res.status(200).json({message: 'heading and subheading added'});
     }
