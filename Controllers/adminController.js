@@ -4,28 +4,27 @@ const cateconfig = require('../Models/cateconfig');
 
 //set category and subcategory
 const setfields = asyncHandler(async (req, res) => {
-    const {category, subcategory} = req.body;
-
+    const {heading, subheading} = req.body;
     const cateconfig1 = await cateconfig.findOne({});
 
     if(cateconfig1 != null){
-        cateconfig1.cate.push({category, subcategory});
+        cateconfig1.category.push({heading, subcategory});
   
         await cateconfig1.save();
-        return res.status(200).json({message: 'category and subcategory added'});
+        return res.status(200).json({message: 'heading and subheading added'});
     }
     else{
-        const cateconfig2 = new cateconfig({cate: [ {category, subcategory}]});
+        const cateconfig2 = new cateconfig({category: [ {heading, subheading}]});
         console.log(cateconfig2);
         await cateconfig2.save();
-        return res.status(200).json({message: 'category and subcategory added'});
+        return res.status(200).json({message: 'heading and subheading added'});
     }
 });
 
 //get fields
 const getData = asyncHandler(async(req,res)=>{
     const data = await cateconfig.findOne({});
-    const actualdata = data.cate;
+    const actualdata = data.category;
     return res.status(200).json({
         Status:1,
         info: actualdata

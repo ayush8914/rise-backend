@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 
 const cateconfigSchema = new mongoose.Schema({
 
-   cate:[
+   category:[
          {
             type:{
-            category: { type: String, required: true },
-            subcategory: [{ type: String, required: false }],
-         
-            }, required: true 
-        }
+            heading: { type: String, required: true },
+            subheading: [{ type: String, required: true }],
+            }, required: true
+          }
    ]
 }, { timestamps: true});
 
