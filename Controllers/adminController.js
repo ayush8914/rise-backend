@@ -8,7 +8,7 @@ const setfields = asyncHandler(async (req, res) => {
     const cateconfig1 = await cateconfig.findOne({});
 
     if(cateconfig1 != null){
-        cateconfig1.category.push({heading, subcategory});
+        cateconfig1.category.push({heading, subheading});
   
         await cateconfig1.save();
         return res.status(200).json({message: 'heading and subheading added'});
