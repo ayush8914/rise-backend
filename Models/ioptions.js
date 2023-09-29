@@ -3,14 +3,8 @@ const mongoose = require('mongoose');
 
 const ioptionSchema = new mongoose.Schema({
    options: [
-        {
-             type: {
-                option: { type: String, required: true },
-             },
-                required: false
-        }
+     {type : String, required: true}
    ]
 });
 
-const Ioption = mongoose.model("ioptions", ioptionSchema);
-module.exports = {Ioption}
+module.exports  = mongoose.model("ioptions", ioptionSchema);

@@ -4,7 +4,7 @@ const Project = require('../Models/project');
 
 const {Observation}  = require("../Models/observations")
 const Lift = require('../Models/lifts');
-const options = require('../Models/ioptions');
+const Ioption = require('../Models/ioptions');
 
 
 //get all inspections
@@ -309,9 +309,10 @@ const updateInspectionById = asyncHandler(async (req, res) => {
 
 //add options to inspection
 const addOptions = asyncHandler(async (req, res) => {
+    try{
     const option = req.body.option;
-    const ops = req.body.options;
-    if(!option && !ops){
+    // const ops = req.body.options;
+    if(!option ){
         return res.status(200).json(
             {   
                 Status:0,
@@ -319,37 +320,40 @@ const addOptions = asyncHandler(async (req, res) => {
             }
             );
     }
-    if(ops){
-        const ioptions = await options.findOne({});
-        const cnt = await options.countDocuments();
-        if(cnt){
-            ioptions.options.push(...ops);
-            await ioptions.save();
-            res.status(200).json({
-                Status:1,
-                Message: 'Options added successfully',
-                info: ioptions
-            });
-        }
-        else{
-            const ioptions = new options({
-                options : options
-            });
-            await ioptions.save();
-            res.status(200).json({
-                Status:1,
-                Message: 'Options added successfully',
-                info: ioptions
-            });
-        }
-    }
+
+    // if(ops){
+    //     const ioptions = await Ioption.findOne({});
+    //     const cnt = await Ioption.countDocuments();
+    
+    //     if(cnt){
+    //         ioptions.options.push(...ops);
+    //         await ioptions.save();
+    //        return res.status(200).json({
+    //             Status:1,
+    //             Message: 'Options added successfully',
+    //             info: ioptions
+    //         });
+    //     }
+    //     else{
+    //         const ioptions = new Ioption({
+    //             options : options
+    //         });
+    //         await ioptions.save();
+    //        return res.status(200).json({
+    //             Status:1,
+    //             Message: 'Options added successfully',
+    //             info: ioptions
+    //         });
+    //     }
+    // }
     if(option){
-        const ioptions = await options.findOne({});
-        const cnt = await options.countDocuments();
+        const ioptions = await Ioption.findOne({});
+        const cnt = await Ioption.countDocuments();
+    
         if(cnt){
             ioptions.options.push(option);
             await ioptions.save();
-            res.status(200).json({
+           return res.status(200).json({
                 Status:1,
                 Message: 'Option added successfully',
                 info: ioptions
@@ -358,11 +362,11 @@ const addOptions = asyncHandler(async (req, res) => {
         else{
             var temp = [];
             temp.push(option);
-            const ioptions = new options({
+            const ioptions = new Ioption({
                 options : temp
             });
             await ioptions.save();
-            res.status(200).json({
+            return res.status(200).json({
                 Status:1,
                 Message: 'Option added successfully',
                 info: ioptions
@@ -370,7 +374,15 @@ const addOptions = asyncHandler(async (req, res) => {
         }
 
     }
-
+    }catch(err){
+    console.log(err);
+    return res.status(200).json(
+        {   
+            Status:0,
+            Message: 'Something went wrong'
+        }
+        ); 
+    }
 });
 
 module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection,addOptions}
