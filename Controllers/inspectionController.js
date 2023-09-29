@@ -168,7 +168,7 @@ const createInspection = asyncHandler(async (req, res) => {
                 
 
                 //also can be done from the frontend
-                if(!Date || !starttime || !reference || !contractor_name || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date ||){
+                if(!Date || !starttime || !reference || !contractor_name || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date ){
                     const params = [];
                     if(!Date){
                         params.push('Date');
