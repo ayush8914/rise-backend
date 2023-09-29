@@ -24,7 +24,7 @@ const transporter = nodemailer.createTransport({
                     body {
                       font-family: Arial, sans-serif;
                     }
-                    .container {
+                    .container {  
                       padding: 20px;
                       background-color: #f2f2f2;
                     }

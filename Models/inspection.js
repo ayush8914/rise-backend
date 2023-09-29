@@ -19,7 +19,7 @@ const inspectionSchema = new mongoose.Schema({
     inspection_date : { type: Date, required: false },
     // fundations: [{type:Object, required: false}],
    //last inspection date  -> required is false because it is not mandatory
-});
+},{ timestamps: true});
 
 
 module.exports = mongoose.model("inspections", inspectionSchema);
