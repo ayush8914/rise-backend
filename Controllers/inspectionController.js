@@ -152,6 +152,15 @@ const createInspection = asyncHandler(async (req, res) => {
             }else{
                 console.log(req.files,1);
             }
+            if(!Date || !starttime || !reference || !contractor_name || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date){
+                return res.status(200).json(
+                    {   
+                        Status:0,
+                        Message: 'Invalid inspection data'
+                    }
+                    );
+            }
+
             const {Date ,
                 starttime,
                 reference,
@@ -163,6 +172,7 @@ const createInspection = asyncHandler(async (req, res) => {
                 statutory_inspection = false,
                 reason_for_inspection = undefined,
                 inspection_date = undefined} = req.body;
+
 
             const referenceImages = req.files['referenceImages'];
             const bespokedesigns = req.files['bespokedesigns'];

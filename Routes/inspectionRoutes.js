@@ -56,7 +56,7 @@ router.delete('/deleteimages/:id', (req, res) => {
     res.status(200).json({Status: 1, message: 'Images deleted successfully'});
 });
 
-router.post('/:id', createInspection);
+router.post('/:id',createInspection);
 //get short details of all inspections
 router.get('/', getInspections);
 
