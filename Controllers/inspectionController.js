@@ -385,4 +385,67 @@ const addOptions = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection,addOptions}
+
+//get options
+const getOptions = asyncHandler(async (req, res) => {
+    const ioptions = await Ioption.findOne({});
+    const cnt = await Ioption.countDocuments();
+    if(cnt){
+        return res.status(200).json({
+            Status:1,
+            Message: 'Options fetched successfully',
+            info: ioptions
+        });
+    }
+    else{
+        return res.status(200).json({
+            Status:0,
+            Message: 'Options not found',
+        });
+    }
+});
+
+
+//delete options 
+const deleteOption = asyncHandler(async (req, res) => {
+    try{
+    const option = req.body.option;
+    const ioptions = await Ioption.findOne({});
+    const cnt = await Ioption.countDocuments();
+    if(cnt){
+        const index = ioptions.options.indexOf(option);
+        if(index > -1){
+            ioptions.options.splice(index, 1);
+            await ioptions.save();
+            return res.status(200).json({
+                Status:1,
+                Message: 'Option deleted successfully',
+                info: ioptions
+            });
+        }
+        else{
+            return res.status(200).json({
+                Status:0,
+                Message: 'Option not found',
+            });
+        }
+    }
+    else{
+        return res.status(200).json({
+            Status:0,
+            Message: 'Options not found',
+        });
+    }
+    }catch(err){
+    console.log(err);
+    return res.status(200).json(
+        {   
+            Status:0,
+            Message: 'Something went wrong'
+        }
+        ); 
+    }
+}
+);
+
+module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption}
