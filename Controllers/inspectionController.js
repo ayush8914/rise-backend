@@ -207,9 +207,8 @@ const createInspection = asyncHandler(async (req, res) => {
                             params: params
                         }
                         );
+                    
                     }
-                   
-            });
 
             const referenceImages = req.files['referenceImages'];
             const bespokedesigns = req.files['bespokedesigns'];
