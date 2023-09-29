@@ -4,6 +4,7 @@ const Project = require('../Models/project');
 
 const {Observation}  = require("../Models/observations")
 const Lift = require('../Models/lifts');
+const options = require('../Models/ioptions');
 
 
 //get all inspections
@@ -165,7 +166,9 @@ const createInspection = asyncHandler(async (req, res) => {
                 reason_for_inspection = undefined,
                 inspection_date = undefined} = req.body;
                 
-                if(!Date || !starttime || !reference || !contractor_name || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date){
+
+                //also can be done from the frontend
+                if(!Date || !starttime || !reference || !contractor_name || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date ||){
                     const params = [];
                     if(!Date){
                         params.push('Date');
@@ -303,4 +306,71 @@ const updateInspectionById = asyncHandler(async (req, res) => {
     // res.status(200).json(inspection);
 });
 
-module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection}
+
+//add options to inspection
+const addOptions = asyncHandler(async (req, res) => {
+    const option = req.body.option;
+    const ops = req.body.options;
+    if(!option && !ops){
+        return res.status(200).json(
+            {   
+                Status:0,
+                Message: 'Option not found'
+            }
+            );
+    }
+    if(ops){
+        const ioptions = await options.findOne({});
+        const cnt = await options.countDocuments();
+        if(cnt){
+            ioptions.options.push(...ops);
+            await ioptions.save();
+            res.status(200).json({
+                Status:1,
+                Message: 'Options added successfully',
+                info: ioptions
+            });
+        }
+        else{
+            const ioptions = new options({
+                options : options
+            });
+            await ioptions.save();
+            res.status(200).json({
+                Status:1,
+                Message: 'Options added successfully',
+                info: ioptions
+            });
+        }
+    }
+    if(option){
+        const ioptions = await options.findOne({});
+        const cnt = await options.countDocuments();
+        if(cnt){
+            ioptions.options.push(option);
+            await ioptions.save();
+            res.status(200).json({
+                Status:1,
+                Message: 'Option added successfully',
+                info: ioptions
+            });
+        }
+        else{
+            var temp = [];
+            temp.push(option);
+            const ioptions = new options({
+                options : temp
+            });
+            await ioptions.save();
+            res.status(200).json({
+                Status:1,
+                Message: 'Option added successfully',
+                info: ioptions
+            });
+        }
+
+    }
+
+});
+
+module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection,addOptions}

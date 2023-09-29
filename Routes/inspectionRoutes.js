@@ -1,6 +1,6 @@
 const experss = require('express');
 const router = experss.Router();
-const { createInspection, getInspectionById, getInspections,updateInspectionById,getInspection } = require('../Controllers/inspectionController');
+const { createInspection, getInspectionById, getInspections,updateInspectionById,getInspection,addOptions } = require('../Controllers/inspectionController');
 const {upload} = require('../middlewares/imageupload');
 const Inspection = require('../Models/inspection');
 const fs = require('fs');
@@ -55,6 +55,9 @@ router.delete('/deleteimages/:id', (req, res) => {
     });
     res.status(200).json({Status: 1, message: 'Images deleted successfully'});
 });
+
+//add options to inspection
+router.post('/addoptions', addOptions);
 
 router.post('/:id',createInspection);
 //get short details of all inspections
