@@ -166,14 +166,50 @@ const createInspection = asyncHandler(async (req, res) => {
                 inspection_date = undefined} = req.body;
                 
                 if(!Date || !starttime || !reference || !contractor_name || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date){
+                    const params = [];
+                    if(!Date){
+                        params.push('Date');
+                    }
+                    if(!starttime){
+                        params.push('starttime');
+                    }
+                    if(!reference){
+                        params.push('reference');
+                    }
+                    if(!contractor_name){
+                        params.push('contractor_name');
+                    }
+                    if(!inspector_name){
+                        params.push('inspector_name');
+                    }
+                    if(!inspector_role){
+                        params.push('inspector_role');
+                    }
+                    if(!scaffold_description){
+                        params.push('scaffold_description');
+                    }
+                    if(!option){
+                        params.push('option');
+                    }
+                    if(!statutory_inspection){
+                        params.push('statutory_inspection');
+                    }
+                    if(!reason_for_inspection){
+                        params.push('reason_for_inspection');
+                    }
+                    if(!inspection_date){
+                        params.push('inspection_date');
+                    }
                     return res.status(200).json(
                         {   
                             Status:0,
-                            Message: 'Invalid inspection data'
+                            Message: 'Inspection data missing',
+                            params: params
                         }
                         );
-                }
-    
+                    }
+                   
+            });
 
             const referenceImages = req.files['referenceImages'];
             const bespokedesigns = req.files['bespokedesigns'];
