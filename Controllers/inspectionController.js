@@ -278,12 +278,12 @@ const updateInspectionById = asyncHandler(async (req, res) => {
         { name: 'referenceImages', maxCount: 10 }, // You can specify the maximum number of files allowed
         { name: 'bespokedesigns', maxCount: 10 },
     ])(req, res, async (err) => {
-const parts = req.body.Date.split("/");
-const formattedDateStr = `${parts[1]}/${parts[0]}/${parts[2]}`;
+     const parts = req.body.Date.split("/");
+     const formattedDateStr = `${parts[1]}/${parts[0]}/${parts[2]}`;
 
 console.log(formattedDateStr); // Output: "09/29/2023"
 
-        inspection.Date = req.body.Date || inspection.Date;
+        inspection.Date = formattedDateStr || inspection.Date;
         inspection.starttime = req.body.starttime || inspection.starttime;
         inspection.reference = req.body.reference || inspection.reference;
         inspection.inspector_name = req.body.inspector_name || inspection.inspector_name;
