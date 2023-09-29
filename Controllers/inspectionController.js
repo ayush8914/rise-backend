@@ -76,7 +76,7 @@ const getInspection = asyncHandler(async (req, res) => {
             Status:1,
             Message: 'Inspection details',
             info: inspection,
-            Foundations: Foundations.isissue ? Foundations : undefined,
+            Foundations: Foundations?.isissue ? Foundations : undefined,
             Sole_boards: Sole_boards?.isissue ? Sole_boards : undefined,
             Kicker_lifts: Kicker_lifts?.isissue ? Kicker_lifts : undefined,
             lifts: lifts?.isissue ? lifts : undefined,
@@ -147,6 +147,7 @@ const createInspection = asyncHandler(async (req, res) => {
             const {Date ,
                 starttime,
                 reference,
+                contractor_name,
                 inspector_name,
                 inspector_role,
                 scaffold_description,
@@ -162,6 +163,7 @@ const createInspection = asyncHandler(async (req, res) => {
             const inspection = new Inspection({
                 projectid,
                 Date ,
+                contractor_name,
                 starttime ,
                 reference,
                 inspector_name ,
@@ -221,6 +223,7 @@ const updateInspectionById = asyncHandler(async (req, res) => {
         inspection.reference = req.body.reference || inspection.reference;
         inspection.inspector_name = req.body.inspector_name || inspection.inspector_name;
         inspection.inspector_role = req.body.inspector_role || inspection.inspector_role;
+        inspection.contractor_name = req.body.contractor_name || inspection.contractor_name;
         inspection.scaffold_description = req.body.scaffold_description || inspection.scaffold_description;
         const existingImages = inspection.referenceImages || [];
         inspection.referenceImages = req.files['referenceImages']?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename ) || [];

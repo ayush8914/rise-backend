@@ -10,7 +10,7 @@ const projectSchema = new mongoose.Schema({
           //site location
 }, { timestamps: true});
 
-module.exports = mongoose.model("projects", projectSchema);
+module.exports = mongoose.model("projects", projectSchema); 
 
 //On Home page rise  --  get the list of all projects and display => project_id, contractor_name, site_name, site_location
 //On project details page   -- get the particular project details and display => contractor_name, site_name, site_location, inspection_reports
