@@ -16,7 +16,7 @@ router.delete('/deleteimage/:id', async (req, res) => {
     const inspectionid = req.params.id;
     const inspection = await Inspection.findById(inspectionid);
     if(!inspection){
-        res.status(200).json({success: 0, message: 'Inspection not found'});
+        res.status(200).json({Status: 0, message: 'Inspection not found'});
     }
     const flag = req.body.img_flag;
     if(flag == 0){
@@ -27,8 +27,8 @@ router.delete('/deleteimage/:id', async (req, res) => {
     const previousImagePath = path.join(parentDirectory, 'public/inspections', img);
     // console.log(previousImagePath);
     fs.unlink(previousImagePath, async(err) => {
-        if(err){
-            res.status(200).json({success: 0, message: 'Failed to delete image'});
+        if(err){    
+            res.status(200).json({Status: 0, message: 'Failed to delete image'});
         }else{
             if(flag == 0){
                 inspection.referenceImages = inspection.referenceImages.filter((img) => img != req.body.imageurl);
@@ -36,7 +36,7 @@ router.delete('/deleteimage/:id', async (req, res) => {
                 inspection.bespokedesigns = inspection.bespokedesigns.filter((img) => img != req.body.imageurl);
             }
            const insp = await inspection.save();
-            res.status(200).json({success: 1, message: 'Image deleted successfully',info: insp});
+            res.status(200).json({Status: 1, message: 'Image deleted successfully',info: insp});
         }
     });
 });
@@ -49,11 +49,11 @@ router.delete('/deleteimages/:id', (req, res) => {
         const previousImagePath = path.join(parentDirectory, 'public/inspections', path.basename(img));
         fs.unlink(previousImagePath, (err) => {
             if(err){
-                res.status(200).json({success: 0, message: 'Failed to delete image'});
+                res.status(200).json({Status: 0, message: 'Failed to delete image'});
             }
         });
     });
-    res.status(200).json({success: 1, message: 'Images deleted successfully'});
+    res.status(200).json({Status: 1, message: 'Images deleted successfully'});
 });
 
 router.post('/:id', createInspection);
