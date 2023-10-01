@@ -9,7 +9,7 @@ const setfields = asyncHandler(async (req, res) => {
 
     if(cateconfig1 != null){
         cateconfig1.category.push({heading, 
-            subheading: subheading.map(name => ({ name })),
+            subheading: subheading?.map(name =>  (name) ),
         });
         
         await cateconfig1.save();
@@ -17,7 +17,7 @@ const setfields = asyncHandler(async (req, res) => {
     }
     else{
         const cateconfig2 = new cateconfig({category: [ {heading, 
-            subheading: subheading.map(name => ({ name })),
+            subheading: subheading?.map(name => (name) ),
         }]});
         console.log(cateconfig2);
         await cateconfig2.save();

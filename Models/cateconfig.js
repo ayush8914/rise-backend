@@ -7,9 +7,7 @@ const cateconfigSchema = new mongoose.Schema({
             type:{
             heading: { type: String, required: true },
             subheading: [
-               {
-               name:{ type: String, required: true }
-               }
+              { type: String, required: true }
             ],
             }, required: true
           }
