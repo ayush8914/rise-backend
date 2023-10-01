@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const liftSchema = new mongoose.Schema({
-    //in mongodb id is automatically generated              
+    //in mongodb id is automatically generated       
+    headingid: {type:mongoose.Schema.Types.ObjectId, required:true},       
     inspectionid : { type: mongoose.Schema.Types.ObjectId, ref: "inspections" }, 
     isissue: { type: Boolean, required: true },     
     observations : [ {

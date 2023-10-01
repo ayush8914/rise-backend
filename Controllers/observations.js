@@ -1,6 +1,7 @@
 const Observation = require('../Models/observations');
 const asyncHandler = require('express-async-handler');
 const category = require('../Models/cateconfig');  
+const Inspection = require('../Models/inspection');
 
 //add observation
 const addObservation = asyncHandler(async (req, res) => {
@@ -70,4 +71,30 @@ const addObservation = asyncHandler(async (req, res) => {
    }
 });
 
-module.exports={addObservation}
+
+
+const updateObservation = asyncHandler(async (req, res) => {
+    const observationid = req.params.id;
+    const observation = await Observation.findById(observationid);
+    if(!observation){
+        return res.status(200).json({success: 0, message: 'Observation not found'});
+    }
+    // observation.issue_identified = req.body.issue_identified;
+    observation.observations = req.body.observations;
+    const updatedObservation = await observation.save();
+    if(updatedObservation){
+        return res.status(200).json({
+            Status: 1,
+            Message: 'Observation updated successfully',
+            info: updatedObservation
+        });
+    }else{
+        return res.status(200).json({
+            Status: 0,
+            Message: 'something went wrong.please try again'
+        });
+    }
+});
+
+
+module.exports={addObservation,updateObservation}

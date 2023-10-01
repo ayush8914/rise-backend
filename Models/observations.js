@@ -12,7 +12,9 @@ const observationSchema = new mongoose.Schema({
          {
             type: {
                option: {type:String, required:true},
-               notes : [{type:String, required:false}],
+               notes : [
+                  {type:String, required:false}
+               ],
                media : [{type:String, required:false}]
             },
             required: false
