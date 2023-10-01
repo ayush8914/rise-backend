@@ -43,7 +43,7 @@ const getInspectionById = asyncHandler(async (req, res) => {
             const isoDate = inspection.Date.toISOString().split('T')[0];
             
    
-            const [year, month, day] = isoDate.split('/');
+            const [year, month, day] = isoDate.split('-');
 
  
             const formattedDate = `${day}/${month}/${year}`;
