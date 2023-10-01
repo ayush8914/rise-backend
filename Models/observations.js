@@ -6,8 +6,8 @@ const observationSchema = new mongoose.Schema({
          required: true,
          ref: 'inspections'
        },
-       category: {type:String, required:true},
-       isissue: {type:Boolean, required:true},
+       headingid: {type:mongoose.Schema.Types.ObjectId, required:true},
+       issue_identified: {type:Boolean, required:true},
        observations : [
          {
             type: {
@@ -17,23 +17,7 @@ const observationSchema = new mongoose.Schema({
             },
             required: false
          }
-         ,]
-  
+         ]
 });
 
-
-const subTypeSchema = new mongoose.Schema({
-    type:{type:String, required:true},
-    observations:[
-    observationSchema
-   ]
-});
-
-const Observation = mongoose.model("observations", observationSchema);
-// const subType = mongoose. model("subType", subTypeSchema);
-module.exports = {Observation}
-
-//On Home page rise  --  get the list of all projects and display => project_id, contractor_name, site_name, site_location
-//On project details page   -- get the particular project details and display => contractor_name, site_name, site_location, inspection_reports
-
-//Add Project page  => takes only contractor_name, site_name, site_location   -- so inspection_reports must be nullable and required is false
+module.exports = mongoose.model("observations", observationSchema);

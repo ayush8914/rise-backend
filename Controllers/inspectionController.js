@@ -43,7 +43,7 @@ const getInspectionById = asyncHandler(async (req, res) => {
             const isoDate = inspection.Date.toISOString().split('T')[0];
             
    
-            const [year, month, day] = isoDate.split('-');
+            const [year, month, day] = isoDate.split('/');
 
  
             const formattedDate = `${day}/${month}/${year}`;
@@ -332,31 +332,6 @@ const addOptions = asyncHandler(async (req, res) => {
             );
     }
 
-    // if(ops){
-    //     const ioptions = await Ioption.findOne({});
-    //     const cnt = await Ioption.countDocuments();
-    
-    //     if(cnt){
-    //         ioptions.options.push(...ops);
-    //         await ioptions.save();
-    //        return res.status(200).json({
-    //             Status:1,
-    //             Message: 'Options added successfully',
-    //             info: ioptions
-    //         });
-    //     }
-    //     else{
-    //         const ioptions = new Ioption({
-    //             options : options
-    //         });
-    //         await ioptions.save();
-    //        return res.status(200).json({
-    //             Status:1,
-    //             Message: 'Options added successfully',
-    //             info: ioptions
-    //         });
-    //     }
-    // }
     if(option){
         const ioptions = await Ioption.findOne({});
         const cnt = await Ioption.countDocuments();
@@ -459,6 +434,6 @@ const deleteOption = asyncHandler(async (req, res) => {
 }
 );
 
-const abx={};
+
 
 module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption}
