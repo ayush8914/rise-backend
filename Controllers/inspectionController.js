@@ -397,9 +397,11 @@ const getInspectionDetails = asyncHandler(async (req, res) => {
       return res.status(200).json({
         Status: 1,
         Message: 'Inspection details',
+        info: {
         projects: projects,
         options: ioptions,
-        reasons: ireasons,
+        reasons: ireasons
+        },
       });
     } catch (error) {
       console.error(error);
@@ -409,7 +411,7 @@ const getInspectionDetails = asyncHandler(async (req, res) => {
     }
   });
   
-  
+
 //get reasons
 const getReasons = asyncHandler(async (req, res) => {
     const ireasons = await Ireason.find({});
