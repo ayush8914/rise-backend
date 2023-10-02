@@ -17,24 +17,6 @@ const getInspections = asyncHandler(async (req, res) => {
 });
 });
 
-//get inspection by id
-// const getInspectionById = asyncHandler(async (req, res) => {
-//     var inspection = await Inspection.findById(req.params.id);
-//     if(inspection != null){
-//         console.log(inspection.Date.toISOString().split('T')[0]);
-//         inspection.Date = inspection.Date.toISOString().split('T')[0];
-//        return res.status(200).json({
-//         Status:1,
-//         Message:'Inspection fetched successfully',
-//         info:inspection,
-//        }
-//         );
-//     }
-//     else{
-//         return res.status(404).json({error: 'Inspection not found'});
-//     }
-// });
-
 const getInspectionById = asyncHandler(async (req, res) => {
     try {
         const inspection = await Inspection.findById(req.params.id);
@@ -178,7 +160,7 @@ const createInspection = asyncHandler(async (req, res) => {
 
 
                 //also can be done from the frontend
-                if(!Date || !starttime || !reference  || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date ){
+                if(!Date || !starttime || !reference  || !inspector_name || !inspector_role || !scaffold_description || !option ){
                     const params = [];
                     if(!Date){
                         params.push('Date');
@@ -201,15 +183,16 @@ const createInspection = asyncHandler(async (req, res) => {
                     if(!option){
                         params.push('option');
                     }
-                    if(!statutory_inspection){
-                        params.push('statutory_inspection');
-                    }
-                    if(!reason_for_inspection){
-                        params.push('reason_for_inspection');
-                    }
-                    if(!inspection_date){
-                        params.push('inspection_date');
-                    }
+
+                    if(statutory_inspection == true){
+                        if(!reason_for_inspection){
+                            params.push('reason_for_inspection');
+                        }
+                        if(!inspection_date){
+                            params.push('inspection_date');
+                        }
+                    } 
+
                     return res.status(200).json(
                         {   
                             Status:0,
@@ -217,13 +200,15 @@ const createInspection = asyncHandler(async (req, res) => {
                             params: params
                         }
                         );
-                    
                     }
 
             const referenceImages = req.files['referenceImages'];
             const bespokedesigns = req.files['bespokedesigns'];
             const baseUrl = `${req.protocol}://${req.get('host')}`;
             var imageurl;
+            
+            var createdInspection; 
+            if(statutory_inspection == true){
             const inspection = new Inspection({
                 projectid,
                 Date ,
@@ -239,10 +224,26 @@ const createInspection = asyncHandler(async (req, res) => {
                 reason_for_inspection,
                 inspection_date,
             });
-            console.log(inspection);
-
-            const createdInspection = await inspection.save();
+        
+            createdInspection   = await inspection.save();
+        }else{
+            const inspection = new Inspection({
+                projectid,
+                Date ,
+                starttime ,
+                reference,
+                inspector_name ,
+                inspector_role ,
+                scaffold_description ,
+                referenceImages : referenceImages?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename ),
+                option,
+                bespokedesigns : bespokedesigns?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename),
+                statutory_inspection,
+            });
+            createdInspection = await inspection.save();
+        }
          
+        console.log(createdInspection);
     if(createdInspection){
     return res.status(200).json({
         Status:1,
@@ -259,8 +260,6 @@ const createInspection = asyncHandler(async (req, res) => {
             );
     }
           });
-
-
 });
 
 //update inspection by id
