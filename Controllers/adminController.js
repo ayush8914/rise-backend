@@ -31,6 +31,7 @@ const getData = asyncHandler(async(req,res)=>{
     const actualdata = data.category;
     return res.status(200).json({
         Status:1,
+        Message:'Fetched successfully',
         info: actualdata
     });
 }
