@@ -2,9 +2,7 @@ const mongoose = require('mongoose');
 
 
 const ioptionSchema = new mongoose.Schema({
-   options: [
-     {type : String, required: true}
-   ]
-});
+      option : { type: String, required: true },
+},{ timestamps: true});
 
 module.exports  = mongoose.model("ioptions", ioptionSchema);

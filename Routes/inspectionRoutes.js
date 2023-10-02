@@ -1,6 +1,6 @@
 const experss = require('express');
 const router = experss.Router();
-const { createInspection, getInspectionById, getInspections,updateInspectionById,getInspection,addOptions,getOptions,deleteOption } = require('../Controllers/inspectionController');
+const { createInspection, getInspectionById,addReason, getInspections,updateInspectionById,getInspection, getInspectionDetails,addOptions,getOptions,deleteOption } = require('../Controllers/inspectionController');
 const {upload} = require('../middlewares/imageupload');
 const Inspection = require('../Models/inspection');
 const fs = require('fs');
@@ -56,6 +56,12 @@ router.delete('/deleteimages/:id', (req, res) => {
     res.status(200).json({Status: 1, message: 'Images deleted successfully'});
 });
 
+//get inspection details by id
+router.get('/combinedetails', getInspectionDetails);
+
+//add reason to inspection
+router.post('/addreason', addReason);
+
 //add options to inspection
 router.post('/addoptions', addOptions);
 
@@ -78,6 +84,7 @@ router.get('/details/:id', getInspection);
 
 //update inspection by id
 router.put('/:id', updateInspectionById);
+
 
 
 

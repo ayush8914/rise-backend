@@ -20,8 +20,7 @@ const getShortProjects = asyncHandler(async (req, res) => {
     var projects = await  Project.find({}).sort({ createdAt: -1 });
     if(projects){
         projects = projects.map( project =>  ({
-            projectid: project._id,
-            contractor_name:project.contractor_name
+            projectid: project._id
             }));
     }
     res.status(200).json({

@@ -5,7 +5,7 @@ const Project = require('../Models/project');
 const {Observation}  = require("../Models/observations")
 const Lift = require('../Models/lifts');
 const Ioption = require('../Models/ioptions');
-
+const Ireason = require('../Models/ireason');
 
 //get all inspections
 const getInspections = asyncHandler(async (req, res) => {
@@ -66,6 +66,20 @@ const getInspectionById = asyncHandler(async (req, res) => {
 });
 
 const temp={}
+
+
+//get all inspections
+const shortdetails = asyncHandler(async (req, res) => {
+    const inspections = await Inspection.find({});
+
+    if(inspections){
+        return res.status(200).json({
+            Status:1,
+            Message:'Inspections fetched successfully',
+            info:inspections
+        });
+    }
+});
 
 
 //get all details of inspection by id
@@ -154,7 +168,6 @@ const createInspection = asyncHandler(async (req, res) => {
             const {Date ,
                 starttime,
                 reference,
-                contractor_name,
                 inspector_name,
                 inspector_role,
                 scaffold_description,
@@ -165,7 +178,7 @@ const createInspection = asyncHandler(async (req, res) => {
 
 
                 //also can be done from the frontend
-                if(!Date || !starttime || !reference || !contractor_name || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date ){
+                if(!Date || !starttime || !reference  || !inspector_name || !inspector_role || !scaffold_description || !option || !statutory_inspection || !reason_for_inspection || !inspection_date ){
                     const params = [];
                     if(!Date){
                         params.push('Date');
@@ -175,9 +188,6 @@ const createInspection = asyncHandler(async (req, res) => {
                     }
                     if(!reference){
                         params.push('reference');
-                    }
-                    if(!contractor_name){
-                        params.push('contractor_name');
                     }
                     if(!inspector_name){
                         params.push('inspector_name');
@@ -217,7 +227,6 @@ const createInspection = asyncHandler(async (req, res) => {
             const inspection = new Inspection({
                 projectid,
                 Date ,
-                contractor_name,
                 starttime ,
                 reference,
                 inspector_name ,
@@ -285,7 +294,6 @@ console.log(formattedDateStr); // Output: "09/29/2023"
         inspection.reference = req.body.reference || inspection.reference;
         inspection.inspector_name = req.body.inspector_name || inspection.inspector_name;
         inspection.inspector_role = req.body.inspector_role || inspection.inspector_role;
-        inspection.contractor_name = req.body.contractor_name || inspection.contractor_name;
         inspection.scaffold_description = req.body.scaffold_description || inspection.scaffold_description;
         const existingImages = inspection.referenceImages || [];
         inspection.referenceImages = req.files['referenceImages']?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename ) || [];
@@ -310,70 +318,121 @@ console.log(formattedDateStr); // Output: "09/29/2023"
 
     }
     );
-    // res.status(200).json(inspection);
 });
 
 
 
 //add options to inspection
 const addOptions = asyncHandler(async (req, res) => {
-    try{
     const option = req.body.option;
-    // const ops = req.body.options;
-    if(!option ){
-        return res.status(200).json(
-            {   
-                Status:0,
-                Message: 'Option not found'
-            }
-            );
+    const ioptions = await Ioption.findOne({option});
+    if(ioptions){
+        return res.status(200).json({
+            Status:0,
+            Message: 'Option already exists',
+        });
     }
-
-    if(option){
-        const ioptions = await Ioption.findOne({});
-        const cnt = await Ioption.countDocuments();
-    
-        if(cnt){
-            ioptions.options.push(option);
-            await ioptions.save();
-           return res.status(200).json({
-                Status:1,
-                Message: 'Option added successfully',
-                info: ioptions
-            });
-        }
-        else{
-            var temp = [];
-            temp.push(option);
-            const ioptions = new Ioption({
-                options : temp
-            });
-            await ioptions.save();
+    else{
+        const ioption = new Ioption({
+           option
+        });
+        const createdOption = await ioption.save();
+        if(createdOption){
             return res.status(200).json({
                 Status:1,
                 Message: 'Option added successfully',
-                info: ioptions
+                info: createdOption
             });
         }
-
-    }
-    }catch(err){
-    console.log(err);
-    return res.status(200).json(
-        {   
-            Status:0,
-            Message: 'Something went wrong'
+        else{
+            return res.status(200).json({
+                Status:0,
+                Message: 'Something went wrong',
+            });
         }
-        ); 
+    }
+});
+
+
+//add reason
+const addReason = asyncHandler(async (req, res) => {
+
+    const reason = req.body.reason;
+    const ireasons = await Ireason.findOne({reason});
+    if(ireasons){
+        return res.status(200).json({
+            Status:0,
+            Message: 'Reason already exists',
+        });
+    }
+    else{
+        const ireason = new Ireason({
+           reason
+        });
+        const createdReason = await ireason.save();
+        if(createdReason){
+            return res.status(200).json({
+                Status:1,
+                Message: 'Reason added successfully',
+                info: createdReason
+            });
+        }
+        else{
+            return res.status(200).json({
+                Status:0,
+                Message: 'Something went wrong',
+            });
+        }
+    }
+
+});
+
+//get options, reason and short project details
+const getInspectionDetails = asyncHandler(async (req, res) => {
+    try {
+      const projects = await Project.find({}, 'project_id contractor_name');
+      const ioptions = await Ioption.find({});
+      const ireasons = await Ireason.find({});
+  
+      return res.status(200).json({
+        Status: 1,
+        Message: 'Inspection details',
+        projects: projects,
+        options: ioptions,
+        reasons: ireasons,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(200).json({
+        Status: 0,
+         Message: 'An error occurred while fetching data' });
+    }
+  });
+  
+  
+//get reasons
+const getReasons = asyncHandler(async (req, res) => {
+    const ireasons = await Ireason.find({});
+    if(ireasons){
+        return res.status(200).json({
+            Status:1,
+            Message: 'Reasons fetched successfully',
+            info: ireasons
+        });
+    }
+    else{
+        return res.status(200).json({
+            Status:0,
+            Message: 'Reasons not found',
+        });
     }
 });
 
 
 //get options
 const getOptions = asyncHandler(async (req, res) => {
-    const ioptions = await Ioption.findOne({});
-    const cnt = await Ioption.countDocuments();
-    if(cnt){
+    const ioptions = await Ioption.find({});
+    if(ioptions){
         return res.status(200).json({
             Status:1,
             Message: 'Options fetched successfully',
@@ -391,46 +450,27 @@ const getOptions = asyncHandler(async (req, res) => {
 
 //delete options 
 const deleteOption = asyncHandler(async (req, res) => {
-    try{
-    const option = req.body.option;
-    const ioptions = await Ioption.findOne({});
-    const cnt = await Ioption.countDocuments();
-    if(cnt){
-        const index = ioptions.options.indexOf(option);
-        if(index > -1){
-            ioptions.options.splice(index, 1);
-            await ioptions.save();
-            return res.status(200).json({
-                Status:1,
-                Message: 'Option deleted successfully',
-                info: ioptions
-            });
-        }
-        else{
-            return res.status(200).json({
-                Status:0,
-                Message: 'Option not found',
-            });
-        }
+    const optionid = req.body.optionid;
+    const ioptions = await Ioption.findById(optionid);
+    if(ioptions){
+        const deletedOption = await ioptions.remove();
+        return res.status(200).json({
+            Status:1,
+            Message: 'Option deleted successfully',
+            info: deletedOption
+        });
     }
     else{
         return res.status(200).json({
             Status:0,
-            Message: 'Options not found',
+            Message: 'Option not found',
         });
     }
-    }catch(err){
-    console.log(err);
-    return res.status(200).json(
-        {   
-            Status:0,
-            Message: 'Something went wrong'
-        }
-        ); 
-    }
+
 }
 );
 
 
 
-module.exports={getInspections, getInspectionById, createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption}
+
+module.exports={getInspections,getReasons,getInspectionDetails, getInspectionById, addReason,createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption,shortdetails}
