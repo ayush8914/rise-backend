@@ -147,8 +147,8 @@ const createInspection = asyncHandler(async (req, res) => {
                 scaffold_description,
                 option,
                 statutory_inspection = false,
-                reason_for_inspection = undefined,
-                inspection_date = undefined} = req.body;
+                reason_for_inspection = null,
+                inspection_date = null} = req.body;
 
 
                 //also can be done from the frontend
@@ -231,6 +231,8 @@ const createInspection = asyncHandler(async (req, res) => {
                 option,
                 bespokedesigns : bespokedesigns?.map((file) =>   imageurl = baseUrl+'/inspections/' + file.filename),
                 statutory_inspection,
+                reason_for_inspection,
+                inspection_date,
             });
             createdInspection = await inspection.save();
         }
