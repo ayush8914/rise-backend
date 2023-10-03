@@ -51,25 +51,69 @@ const temp={}
 
 
 //get all inspections
+// const shortdetails = asyncHandler(async (req, res) => {
+//     const userid = req.user._id;
+
+//     const inspections = await Inspection.find({userid:userid}).sort({  createdAt: -1 });
+
+//     if(inspections){
+//         return res.status(200).json({
+//             Status:1,
+//             Message:'Inspections fetched successfully',
+//             info:inspections
+//         });
+//     }
+//     else{
+//         return res.status(200).json({
+//             Status:0,
+//             Message:'Inspections not found',
+//         });
+//     }
+// });
+
 const shortdetails = asyncHandler(async (req, res) => {
     const userid = req.user._id;
 
-    const inspections = await Inspection.find({userid:userid}).sort({  createdAt: -1 });
+    const inspections = await Inspection.find({ userid: userid }).sort({ createdAt: -1 });
 
-    if(inspections){
+    if (inspections) {
+
+        const detailedInspections = [];
+
+        for (const inspection of inspections) {
+            const projectId = inspection.projectId; 
+            const project = await Project.findById(projectId);
+
+            if (project) {
+                // Extract contractor name and site location from the project document
+                const contractor_name = project.contractor_name;
+                const site_name = project.site_name;
+
+                // Include the details in the inspection data
+                const detailedInspection = {
+                    inspection_id: inspection._id, 
+                    Date: inspection.Date,
+                    contractor_name,
+                    site_name,
+                };
+
+                detailedInspections.push(detailedInspection);
+            }
+        }
+
         return res.status(200).json({
-            Status:1,
-            Message:'Inspections fetched successfully',
-            info:inspections
+            Status: 1,
+            Message: 'Inspections fetched successfully',
+            info: detailedInspections,
         });
-    }
-    else{
+    } else {
         return res.status(200).json({
-            Status:0,
-            Message:'Inspections not found',
+            Status: 0,
+            Message: 'Inspections not found',
         });
     }
 });
+
 
 
 //get all details of inspection by id
@@ -149,7 +193,6 @@ const createInspection = asyncHandler(async (req, res) => {
             }
            
             const {
-                userid,
                 Date ,
                 starttime,
                 reference,
@@ -232,7 +275,7 @@ const createInspection = asyncHandler(async (req, res) => {
             createdInspection   = await inspection.save();
         }else{
             const inspection = new Inspection({
-                // userid,
+                userid,
                 projectid,
                 Date ,
                 starttime ,
