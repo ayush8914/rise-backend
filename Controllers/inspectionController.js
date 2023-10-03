@@ -103,18 +103,10 @@ const storage = multer.diskStorage({
     cb(null, './public/inspections'); // Store files in the 'uploads' folder
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + file.originalname);
+    cb(null,    Date.now() + file.originalname);
   },
 });
 
-const fileFilter = (req, file, cb) => {
-    // Accept only image files
-    if (file.mimetype.startsWith('image')) {
-        cb(null, true);
-    } else {
-        cb(new Error('Invalid file type'), false);
-    }
-};
 
 
 // Create multer instance with storage options
@@ -270,7 +262,7 @@ const updateInspectionById = asyncHandler(async (req, res) => {
     if(!inspection){
         return res.status(200).json(
             {   
-                Status:0,
+                Status:0,   
                 Message: 'Inspection not found'
             }
             );
