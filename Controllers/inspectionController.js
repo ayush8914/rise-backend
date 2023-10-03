@@ -52,8 +52,10 @@ const temp={}
 
 //get all inspections
 const shortdetails = asyncHandler(async (req, res) => {
-    const inspections = await Inspection.find({});
-    
+    const userid = req.user._id;
+
+    const inspections = await Inspection.find({userid:userid}).sort({  createdAt: -1 });
+
     if(inspections){
         return res.status(200).json({
             Status:1,
@@ -61,8 +63,13 @@ const shortdetails = asyncHandler(async (req, res) => {
             info:inspections
         });
     }
+    else{
+        return res.status(200).json({
+            Status:0,
+            Message:'Inspections not found',
+        });
+    }
 });
-
 
 
 //get all details of inspection by id
