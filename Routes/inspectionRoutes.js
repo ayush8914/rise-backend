@@ -77,6 +77,8 @@ router.post('/:id',protect,createInspection);   //
 router.get('/', getInspections);
 
 
+router.get('/shortdetails',protect, shortdetails);
+
 //get inspection by id
 router.get('/:id', getInspectionById);
 
@@ -84,10 +86,11 @@ router.get('/:id', getInspectionById);
 router.get('/details/:id', getInspection);
 
 //get short details of all inspections
-router.get('/shortdetails',protect, shortdetails);
+
 
 //update inspection by id
 router.put('/:id',protect, updateInspectionById);  //
+
 
 
 

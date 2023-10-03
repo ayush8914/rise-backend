@@ -21,9 +21,11 @@ const getInspectionById = asyncHandler(async (req, res) => {
     try {
         const inspection = await Inspection.findById(req.params.id);
         if (inspection) {
-            
+            const project = await Project.findById(inspection.projectid);
+            const contractor_name = project.contractor_name;
+            const site_name = project.site_name;
+            const site_location = project.site_location;
             const isoDate = inspection.Date.toISOString().split('T')[0];
-            
             const [year, month, day] = isoDate.split('-');
             const formattedDate = `${day}/${month}/${year}`;
 
@@ -33,6 +35,9 @@ const getInspectionById = asyncHandler(async (req, res) => {
                 info: {
                     ...inspection.toObject(),
                     Date: formattedDate,
+                    contractor_name:contractor_name,
+                    site_name:site_name,
+                    site_location:site_location,
                 },
             });
         } else {
@@ -46,8 +51,6 @@ const getInspectionById = asyncHandler(async (req, res) => {
             Message: 'Internal server error' });
     }
 });
-
-const temp={}
 
 
 //get all inspections
@@ -75,17 +78,15 @@ const shortdetails = asyncHandler(async (req, res) => {
     const userid = req.user._id;
 
     const inspections = await Inspection.find({ userid: userid }).sort({ createdAt: -1 });
-
     if (inspections) {
 
         const detailedInspections = [];
 
         for (const inspection of inspections) {
-            const projectId = inspection.projectId; 
+            const projectId = inspection.projectid; 
             const project = await Project.findById(projectId);
-
+            console.log(project);
             if (project) {
-                // Extract contractor name and site location from the project document
                 const contractor_name = project.contractor_name;
                 const site_name = project.site_name;
 
@@ -109,7 +110,7 @@ const shortdetails = asyncHandler(async (req, res) => {
     } else {
         return res.status(200).json({
             Status: 0,
-            Message: 'Inspections not found',
+            Message: 'Inspections not found ..',
         });
     }
 });
