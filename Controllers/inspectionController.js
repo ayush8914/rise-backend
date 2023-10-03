@@ -53,7 +53,7 @@ const temp={}
 //get all inspections
 const shortdetails = asyncHandler(async (req, res) => {
     const inspections = await Inspection.find({});
-
+    
     if(inspections){
         return res.status(200).json({
             Status:1,
@@ -62,6 +62,7 @@ const shortdetails = asyncHandler(async (req, res) => {
         });
     }
 });
+
 
 
 //get all details of inspection by id
@@ -114,6 +115,7 @@ const upload = multer({ storage: storage });
 
 //create inspection
 const createInspection = asyncHandler(async (req, res) => {
+    const userid = req.user._id;
     const projectid = req.params.id;
     const project = await Project.findById(projectid);
     if(!project){
@@ -139,7 +141,9 @@ const createInspection = asyncHandler(async (req, res) => {
                 console.log(req.files,1);
             }
            
-            const {Date ,
+            const {
+                userid,
+                Date ,
                 starttime,
                 reference,
                 inspector_name,
@@ -202,6 +206,7 @@ const createInspection = asyncHandler(async (req, res) => {
             var createdInspection; 
             if(statutory_inspection == true){
             const inspection = new Inspection({
+                userid,
                 projectid,
                 Date ,
                 starttime ,
@@ -220,6 +225,7 @@ const createInspection = asyncHandler(async (req, res) => {
             createdInspection   = await inspection.save();
         }else{
             const inspection = new Inspection({
+                // userid,
                 projectid,
                 Date ,
                 starttime ,
@@ -260,7 +266,16 @@ const createInspection = asyncHandler(async (req, res) => {
 const updateInspectionById = asyncHandler(async (req, res) => {
     console.time('start');
     const inspection = await Inspection.findById(req.params.id);
-    
+    const userid = req.user._id;
+    if(userid != inspection.userid){
+        return res.status(200).json(
+            {   
+                Status:0,
+                Message: 'You are not authorized to update this inspection'
+            }
+            );
+    }
+
     if(!inspection){
         return res.status(200).json(
             {   
@@ -281,7 +296,6 @@ const updateInspectionById = asyncHandler(async (req, res) => {
      const formattedDateStr = `${parts[1]}/${parts[0]}/${parts[2]}`;
 
 console.log(formattedDateStr); // Output: "09/29/2023"
-
         inspection.Date = formattedDateStr || inspection.Date;
         inspection.starttime = req.body.starttime || inspection.starttime;
         inspection.reference = req.body.reference || inspection.reference;
@@ -308,11 +322,9 @@ console.log(formattedDateStr); // Output: "09/29/2023"
            info: updatedInspection
            }
             );
-
     }
     );
 });
-
 
 
 //add options to inspection

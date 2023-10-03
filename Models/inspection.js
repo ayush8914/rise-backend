@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 //its basically inspection of sites
 
 const inspectionSchema = new mongoose.Schema({
-    //ref to project
+    userid : { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     projectid: { type: mongoose.Schema.Types.ObjectId, ref: "projects" }, //ref to particular project so we can easily get the inspection reports of that project
     reference: { type: String, required: true },            //reference of inspection
     Date : { type: Date, required: true },                   //date of inspection 
@@ -16,8 +16,7 @@ const inspectionSchema = new mongoose.Schema({
     statutory_inspection : { type: Boolean, required: false },     //is it statutory   -> required is false because it is not mandatory
     reason_for_inspection : { type: String, required: false },      //reason for statutory inspection -> required is false because it is not mandatory
     inspection_date : { type: Date, required: false },
-    // fundations: [{type:Object, required: false}],
-   //last inspection date  -> required is false because it is not mandatory
+
 },{ timestamps: true});
 
 

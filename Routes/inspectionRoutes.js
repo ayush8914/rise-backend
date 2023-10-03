@@ -5,6 +5,7 @@ const {upload} = require('../middlewares/imageupload');
 const Inspection = require('../Models/inspection');
 const fs = require('fs');
 const path = require('path');
+const {protect} = require('../middlewares/auth');
 
 router.post('/addimage',upload.single('image'), (req, res) => {
     const baseUrl = `${req.protocol}://${req.get('host')}/`;
@@ -71,7 +72,7 @@ router.get('/getoptions',getOptions)
 //delete options from the inspection
 router.delete('/deleteoptions',deleteOption);
 
-router.post('/:id',createInspection);
+router.post('/:id',protect,createInspection);   //
 //get short details of all inspections
 router.get('/', getInspections);
 
@@ -83,7 +84,7 @@ router.get('/:id', getInspectionById);
 router.get('/details/:id', getInspection);
 
 //update inspection by id
-router.put('/:id', updateInspectionById);
+router.put('/:id',protect, updateInspectionById);  //
 
 
 
