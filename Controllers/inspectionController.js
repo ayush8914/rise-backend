@@ -25,9 +25,17 @@ const getInspectionById = asyncHandler(async (req, res) => {
             const contractor_name = project.contractor_name;
             const site_name = project.site_name;
             const site_location = project.site_location;
+
+     
+
             const isoDate = inspection.Date.toISOString().split('T')[0];
             const [year, month, day] = isoDate.split('-');
             const formattedDate = `${day}/${month}/${year}`;
+            
+            const isoDate1 = inspection.inspection_date.toISOString().split('T')[0];
+            const [y, m, d] = isoDate1.split('-');
+            const formattedDate1 = `${d}/${m}/${y}`;
+
 
             return res.status(200).json({
                 Status: 1,
@@ -35,6 +43,7 @@ const getInspectionById = asyncHandler(async (req, res) => {
                 info: {
                     ...inspection.toObject(),
                     Date: formattedDate,
+                    inspection_date: formattedDate1,
                     contractor_name:contractor_name,
                     site_name:site_name,
                     site_location:site_location,
