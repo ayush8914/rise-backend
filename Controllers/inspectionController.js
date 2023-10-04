@@ -349,6 +349,10 @@ const updateInspectionById = asyncHandler(async (req, res) => {
     ])(req, res, async (err) => {
      const parts = req.body.Date.split("/");
      const formattedDateStr = `${parts[1]}/${parts[0]}/${parts[2]}`;
+     
+
+     const parts1 = req.body.inspection_date.split("/");
+     const formattedDateStr1 = `${parts1[1]}/${parts1[0]}/${parts1[2]}`;
 
 console.log(formattedDateStr); // Output: "09/29/2023"
         inspection.Date = formattedDateStr || inspection.Date;
@@ -367,7 +371,7 @@ console.log(formattedDateStr); // Output: "09/29/2023"
 
         inspection.statutory_inspection = req.body.statutory_inspection || inspection.statutory_inspection;
         inspection.reason_for_inspection = req.body.reason_for_inspection || inspection.reason_for_inspection;
-        inspection.inspection_date = req.body.inspection_date || inspection.inspection_date;
+        inspection.inspection_date = formattedDateStr1 || inspection.inspection_date;
         const updatedInspection = await inspection.save();
         console.timeEnd('end');
        return res.status(200).json(
