@@ -316,16 +316,11 @@ const createInspection = asyncHandler(async (req, res) => {
 //update inspection by id
 const updateInspectionById = asyncHandler(async (req, res) => {
     console.time('start');
-    const inspection = await Inspection.findById(req.params.id);
+    //find where userid and id matches
+
+    const inspection = await Inspection.findById({userid:req.user._id,_id:req.params.id});
+    // console.log(inspection.userid,req.user._id);
     const userid = req.user._id;
-    if(userid != inspection.userid){
-        return res.status(200).json(
-            {   
-                Status:0,
-                Message: 'You are not authorized to update this inspection'
-            }
-            );
-    }
 
     if(!inspection){
         return res.status(200).json(
