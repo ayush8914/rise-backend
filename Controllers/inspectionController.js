@@ -21,6 +21,7 @@ const getInspectionById = asyncHandler(async (req, res) => {
     try {
         const inspection = await Inspection.findById(req.params.id);
         if (inspection) {
+
             const project = await Project.findById(inspection.projectid);
             const contractor_name = project.contractor_name;
             const site_name = project.site_name;
@@ -31,11 +32,17 @@ const getInspectionById = asyncHandler(async (req, res) => {
             const isoDate = inspection.Date.toISOString().split('T')[0];
             const [year, month, day] = isoDate.split('-');
             const formattedDate = `${day}/${month}/${year}`;
-            
-            const isoDate1 = inspection.inspection_date.toISOString().split('T')[0];
-            const [y, m, d] = isoDate1.split('-');
-            const formattedDate1 = `${d}/${m}/${y}`;
+             
+            var date;
 
+            if (typeof inspection.inspection_date !== 'undefined' && inspection.inspection_date !== null) {
+              const isoDate1 = inspection.inspection_date.toISOString().split('T')[0];
+              const [y, m, d] = isoDate1.split('-');
+              const formattedDate1 = `${d}/${m}/${y}`;
+              date = formattedDate1;
+            } else {
+              date = null; // Assign null to 'date' when 'inspection_date' is undefined or null
+            }
 
             return res.status(200).json({
                 Status: 1,
@@ -43,7 +50,7 @@ const getInspectionById = asyncHandler(async (req, res) => {
                 info: {
                     ...inspection.toObject(),
                     Date: formattedDate,
-                    inspection_date: formattedDate1,
+                    inspection_date: date,
                     contractor_name:contractor_name,
                     site_name:site_name,
                     site_location:site_location,
@@ -55,6 +62,7 @@ const getInspectionById = asyncHandler(async (req, res) => {
                 Message: 'Inspection not found' });
         }
     } catch (error) {
+        console.log(error);
         return res.status(200).json({ 
             Status:0,
             Message: 'Internal server error' });
@@ -350,9 +358,13 @@ const updateInspectionById = asyncHandler(async (req, res) => {
      const parts = req.body.Date.split("/");
      const formattedDateStr = `${parts[1]}/${parts[0]}/${parts[2]}`;
      
-
-     const parts1 = req.body.inspection_date.split("/");
+     var date;
+     if(req.body.inspection_date != undefined){
+     const parts1 = req.body.inspection_date?.split("/");
      const formattedDateStr1 = `${parts1[1]}/${parts1[0]}/${parts1[2]}`;
+        date = formattedDateStr1;
+     }
+    
 
 console.log(formattedDateStr); // Output: "09/29/2023"
         inspection.Date = formattedDateStr || inspection.Date;
@@ -371,7 +383,7 @@ console.log(formattedDateStr); // Output: "09/29/2023"
 
         inspection.statutory_inspection = req.body.statutory_inspection || inspection.statutory_inspection;
         inspection.reason_for_inspection = req.body.reason_for_inspection || inspection.reason_for_inspection;
-        inspection.inspection_date = formattedDateStr1 || inspection.inspection_date;
+        inspection.inspection_date = date || inspection.inspection_date;
         const updatedInspection = await inspection.save();
         console.timeEnd('end');
        return res.status(200).json(
