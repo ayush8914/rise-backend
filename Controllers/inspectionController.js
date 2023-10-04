@@ -377,6 +377,7 @@ console.log(formattedDateStr); // Output: "09/29/2023"
     );
 });
 
+const temp={}
 
 //add options to inspection
 const addOptions = asyncHandler(async (req, res) => {
