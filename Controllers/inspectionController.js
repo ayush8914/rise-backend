@@ -102,14 +102,17 @@ const shortdetails = asyncHandler(async (req, res) => {
         for (const inspection of inspections) {
             const projectId = inspection.projectid; 
             const project = await Project.findById(projectId);
-            console.log(project);
             if (project) {
                 const contractor_name = project.contractor_name;
                 const site_name = project.site_name;
-
-                const inspectionDate = new Date(inspection.Date); // Convert to Date object
-                const options = { day: 'numeric', month: 'short', year: 'numeric' };
-                const formattedDate = inspectionDate.toLocaleDateString('en-US', options);                
+                const inspectionDate = new Date(inspection.Date);
+                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                const day = inspectionDate.getDate();
+                const monthIndex = inspectionDate.getMonth();
+                const year = inspectionDate.getFullYear();
+                const formattedDate = `${day} ${monthNames[monthIndex]}, ${year}`;
+                console.log(formattedDate);
+                            
                 // Include the details in the inspection data
                 const detailedInspection = {
                     inspection_id: inspection._id, 
