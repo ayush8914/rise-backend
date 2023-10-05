@@ -1,6 +1,6 @@
 const experss = require('express');
 const router = experss.Router();
-const { addObservation,updateObservation } = require('../Controllers/observations');
+const { addObservation,updateObservation,getObservation } = require('../Controllers/observations');
 const {addLift,updateLift} = require('../Controllers/liftController');
 const multer = require('multer');
 const path = require('path');
@@ -68,6 +68,9 @@ router.post('/:id/:headingid', addObservation);
 
 //edit observation
 router.put('/:id', updateObservation);
+
+//get observation
+router.get('/:id/:headingid', getObservation);
 
 router.post('/lifts/:id/:headingid', addLift);
 

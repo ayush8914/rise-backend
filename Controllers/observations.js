@@ -97,4 +97,20 @@ const updateObservation = asyncHandler(async (req, res) => {
 });
 
 
-module.exports={addObservation,updateObservation}
+//get observation
+const getObservation = asyncHandler(async (req, res) => {
+    const inspectionid = req.params.id;
+    const headingid = req.params.headingid;
+    const observation = await Observation.findOne({inspectionid: inspectionid, headingid: headingid});
+    if(!observation){
+        return res.status(200).json({success: 0, message: 'Observation not found'});
+    }
+    return res.status(200).json({
+        Status: 1,
+        Message: 'Observation found',
+        info: observation
+    });
+});
+
+
+module.exports={addObservation,updateObservation,getObservation}
