@@ -96,7 +96,7 @@ const shortdetails = asyncHandler(async (req, res) => {
 
     const inspections = await Inspection.find({ userid: userid }).sort({ createdAt: -1 });
     if (inspections) {
-
+       
         const detailedInspections = [];
 
         for (const inspection of inspections) {
@@ -107,10 +107,13 @@ const shortdetails = asyncHandler(async (req, res) => {
                 const contractor_name = project.contractor_name;
                 const site_name = project.site_name;
 
+                const inspectionDate = new Date(inspection.Date); // Convert to Date object
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                const formattedDate = inspectionDate.toLocaleDateString('en-US', options);
                 // Include the details in the inspection data
                 const detailedInspection = {
                     inspection_id: inspection._id, 
-                    Date: inspection.Date,
+                    Date: formattedDate,
                     contractor_name,
                     site_name,
                 };
