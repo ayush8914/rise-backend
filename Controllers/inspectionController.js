@@ -108,8 +108,8 @@ const shortdetails = asyncHandler(async (req, res) => {
                 const site_name = project.site_name;
 
                 const inspectionDate = new Date(inspection.Date); // Convert to Date object
-                const options = { year: 'numeric', month: 'short', day: 'numeric' };
-                const formattedDate = inspectionDate.toLocaleDateString('en-US', options);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                const formattedDate = inspectionDate.toLocaleDateString('en-US', options);                
                 // Include the details in the inspection data
                 const detailedInspection = {
                     inspection_id: inspection._id, 
