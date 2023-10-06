@@ -102,16 +102,15 @@ const shortdetails = asyncHandler(async (req, res) => {
         for (const inspection of inspections) {
             const projectId = inspection.projectid; 
             const project = await Project.findById(projectId);
+            
+            const isoDate = inspection.Date.toISOString().split('T')[0];
+            const [year, month, day] = isoDate.split('-');
+            const formattedDate = `${day}/${month}/${year}`;
+
             if (project) {
                 const contractor_name = project.contractor_name;
                 const site_name = project.site_name;
-                const inspectionDate = new Date(inspection.Date);
-                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                const day = inspectionDate.getDate();
-                const monthIndex = inspectionDate.getMonth();
-                const year = inspectionDate.getFullYear();
-                const formattedDate = `${day} ${monthNames[monthIndex]}, ${year}`;
-                console.log(formattedDate);
+                
                             
                 // Include the details in the inspection data
                 const detailedInspection = {
@@ -554,6 +553,8 @@ const deleteOption = asyncHandler(async (req, res) => {
 
 }
 );
+
+
 
 
 module.exports={getInspections,getReasons,getInspectionDetails, getInspectionById, addReason,createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption,shortdetails}
