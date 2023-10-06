@@ -556,6 +556,6 @@ const deleteOption = asyncHandler(async (req, res) => {
 );
 
 
-const temp={}
+const temp1={}
 
 module.exports={getInspections,getReasons,getInspectionDetails, getInspectionById, addReason,createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption,shortdetails}
