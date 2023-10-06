@@ -57,6 +57,8 @@ router.delete('/deleteimages/:id', (req, res) => {
     res.status(200).json({Status: 1, message: 'Images deleted successfully'});
 });
 
+router.get('/shortdetails',protect, shortdetails);
+
 //get inspection details by id
 router.get('/combinedetails', getInspectionDetails);
 
@@ -77,7 +79,7 @@ router.post('/:id',protect,createInspection);   //
 router.get('/', getInspections);
 
 
-router.get('/shortdetails',protect, shortdetails);
+
 
 //get inspection by id
 router.get('/:id', getInspectionById);
