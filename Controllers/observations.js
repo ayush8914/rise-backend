@@ -103,7 +103,7 @@ const getObservation = asyncHandler(async (req, res) => {
     const headingid = req.params.headingid;
     const observation = await Observation.findOne({inspectionid: inspectionid, headingid: headingid});
     if(!observation){
-        return res.status(200).json({success: 1, message: 'Observation not found'});
+        return res.status(200).json({Status: 0, message: 'Observation not found'});
     }
     return res.status(200).json({
         Status: 1,
