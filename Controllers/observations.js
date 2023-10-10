@@ -7,6 +7,15 @@ const Inspection = require('../Models/inspection');
 const addObservation = asyncHandler(async (req, res) => {
     const inspectionid = req.params.id;
     const headingid = req.params.headingid;
+    var param=[];
+
+    if(headingid == undefined || headingid == null){
+        param.push("headingid");
+    }
+    if(inspectionid == undefined || inspectionid == null){
+        param.push("inspectionid");
+    }
+
     const heading = await category.findOne({'category._id': headingid});
     if(!heading){
         return res.status(200).json({success: 0, message: 'Heading not found'});
@@ -23,9 +32,27 @@ const addObservation = asyncHandler(async (req, res) => {
             Message: 'Observation already exists'
         });
     }
+    
+    if(!req.body.issue_identified){
+        param.push("issue_identified");
+    } 
+
+    if(!req.body.observations){
+        param.push("observations");
+    }
+
+    if(param.length > 0){
+        return res.status(200).json({
+            Status: 0,
+            Message: 'Please provide '+param.join(', ')+' value',
+            Params: param
+        });
+    }
+    
+
      if(req.body.issue_identified == true){
        
-
+    
     const observation = new Observation({
         inspectionid: inspectionid,
         headingid: headingid,
@@ -43,7 +70,8 @@ const addObservation = asyncHandler(async (req, res) => {
     }else{
         return res.status(200).json({
             Status: 0,
-            Message: 'something went wrong.please try again'
+            Message: 'something went wrong.please try again',
+            Params: param
         });
     }
    }
@@ -65,7 +93,8 @@ const addObservation = asyncHandler(async (req, res) => {
     }else{
         return res.status(200).json({
             Status: 0,
-            Message: 'something went wrong.please try again'
+            Message: 'something went wrong.please try again',
+            Params: param
         });
     }
    }
@@ -103,7 +132,7 @@ const getObservation = asyncHandler(async (req, res) => {
     const headingid = req.params.headingid;
     const observation = await Observation.findOne({inspectionid: inspectionid, headingid: headingid});
     if(!observation){
-        return res.status(200).json({Status: 0, message: 'Observation not found'});
+        return res.status(200).json({Status: 0, Message: 'Observation not found'});
     }
     return res.status(200).json({
         Status: 1,
