@@ -10,7 +10,9 @@ const {protect} = require('../middlewares/auth');
 router.post('/addimage',upload.single('image'), (req, res) => {
     const baseUrl = `${req.protocol}://${req.get('host')}/`;
     const des_folder = 'inspections/';
-    res.status(200).json({success: 1, image: baseUrl+des_folder+req.file.filename});
+    res.status(200).json({Status: 1,
+        Message:"image saved",
+        image: baseUrl+des_folder+req.file.filename});
 });
 
 router.delete('/deleteimage/:id', async (req, res) => {

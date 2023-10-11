@@ -18,10 +18,13 @@ const storage = multer.diskStorage({
   });
 
 const upload = multer({ storage: storage});
+
 router.post('/addimage',upload.single('image'), (req, res) => {
     const baseUrl = `${req.protocol}://${req.get('host')}/`;
     const des_folder = 'observations/';
-    res.status(200).json({success: 1, image: baseUrl+des_folder+req.file.filename});
+    res.status(200).json({Status: 1,
+        Message:"image saved",
+         image: baseUrl+des_folder+req.file.filename});
 });
 
 const fs = require('fs');
@@ -33,9 +36,9 @@ router.delete('/deleteimage', async (req, res) => {
     // console.log(previousImagePath);
     fs.unlink(previousImagePath, async(err) => {
         if(err){
-            res.status(200).json({success: 0, message: 'Failed to delete image'});
+            res.status(200).json({Status: 0, Message: 'Failed to delete image'});
         }else{
-            res.status(200).json({success: 1, message: 'Image deleted successfully'});
+            res.status(200).json({Status: 1, Message: 'Image deleted successfully'});
         }
     });
 });
@@ -48,7 +51,7 @@ router.delete('/deleteimages', (req, res) => {
     const parentDirectory = path.dirname(__dirname);
     // console.log(images);
     if(!images  || images.length == 0){
-        return res.status(200).json({success: 0, message: 'No images to delete'});
+        return res.status(200).json({Status: 0, Message: 'No images to delete'});
     }
     var notfound = [];
     images.forEach(img => {
@@ -61,7 +64,7 @@ router.delete('/deleteimages', (req, res) => {
             }
         });
     });
-    res.status(200).json({success: 1, message: 'Images deleted successfully', notfound: notfound});
+    res.status(200).json({Status: 1, Message: 'Images deleted successfully', notfound: notfound});
 });
 
 router.post('/:id/:headingid', addObservation);
