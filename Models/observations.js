@@ -15,7 +15,8 @@ const observationSchema = new mongoose.Schema({
                notes : [
                   {type:String, required:false}
                ],
-               media : [{type:String, required:false}]
+               media : [{type:String, required:false}],
+               rectifyInspection : {type: String , required: true},
             },
             required: false
          }

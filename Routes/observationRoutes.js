@@ -17,12 +17,15 @@ const storage = multer.diskStorage({
     },
   });
 
+
 const upload = multer({ storage: storage});
 
 router.post('/addimage',upload.single('image'), (req, res) => {
     const baseUrl = `${req.protocol}://${req.get('host')}/`;
     const des_folder = 'observations/';
-    res.status(200).json({Status: 1,
+    res.status(200).json(
+        {
+        Status: 1,
         Message:"image saved",
          image: baseUrl+des_folder+req.file.filename});
 });
