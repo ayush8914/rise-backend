@@ -1,7 +1,7 @@
 const experss = require('express');
 const router = experss.Router();
 const { addObservation,updateObservation,getObservation } = require('../Controllers/observations');
-const {addLift,updateLift} = require('../Controllers/liftController');
+const {addLift,updateLift,getLiftByInspectionId} = require('../Controllers/liftController');
 const multer = require('multer');
 const path = require('path');
 
@@ -59,7 +59,7 @@ router.delete('/deleteimages', (req, res) => {
     var notfound = [];
     images.forEach(img => {
         const previousImagePath = path.join(parentDirectory, 'public/observations', path.basename(img));
-
+        
         fs.unlink(previousImagePath, (err) => {
             if(err){
                 console.log('image not found');
@@ -72,6 +72,9 @@ router.delete('/deleteimages', (req, res) => {
 
 router.post('/:id/:headingid', addObservation);
 
+router.get('/lifts/:id', getLiftByInspectionId);
+
+
 //edit observation
 router.put('/:id', updateObservation);
 
@@ -82,6 +85,10 @@ router.post('/lifts/:id/:headingid', addLift);
 
 //edit lift
 router.put('/lifts/:id', updateLift);
+
+
+//get lift by inspectionid
+
 
 // "http://localhost:5000/observations/1695392713553Screenshot 2023-09-15 194044.png"
 

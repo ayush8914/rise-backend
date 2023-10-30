@@ -1,8 +1,10 @@
 const asyncHandler = require('express-async-handler');
 const Inspection = require('../Models/inspection');
-const Project = require('../Models/project');   
+const Project = require('../Models/project');  
 
-const {Observation}  = require("../Models/observations")
+const cateconfig = require('../Models/cateconfig');
+
+const Observation  = require("../Models/observations")
 const Lift = require('../Models/lifts');
 const Ioption = require('../Models/ioptions');
 const Ireason = require('../Models/ireason');
@@ -17,6 +19,8 @@ const getInspections = asyncHandler(async (req, res) => {
 });
 });
 
+
+
 const getInspectionById = asyncHandler(async (req, res) => {
     try {
         const inspection = await Inspection.findById(req.params.id);
@@ -29,28 +33,28 @@ const getInspectionById = asyncHandler(async (req, res) => {
 
      
 
-            const isoDate = inspection.Date.toISOString().split('T')[0];
-            const [year, month, day] = isoDate.split('-');
-            const formattedDate = `${day}/${month}/${year}`;
+            // const isoDate = inspection.Date.toISOString().split('T')[0];
+            // const [year, month, day] = isoDate.split('-');
+            // const formattedDate = `${day}/${month}/${year}`;
              
-            var date;
+            // var date;
 
-            if (typeof inspection.inspection_date !== 'undefined' && inspection.inspection_date !== null) {
-              const isoDate1 = inspection.inspection_date.toISOString().split('T')[0];
-              const [y, m, d] = isoDate1.split('-');
-              const formattedDate1 = `${d}/${m}/${y}`;
-              date = formattedDate1;
-            } else {
-              date = null; // Assign null to 'date' when 'inspection_date' is undefined or null
-            }
+            // if (typeof inspection.inspection_date !== 'undefined' && inspection.inspection_date !== null) {
+            //   const isoDate1 = inspection.inspection_date.toISOString().split('T')[0];
+            //   const [y, m, d] = isoDate1.split('-');
+            //   const formattedDate1 = `${d}/${m}/${y}`;
+            //   date = formattedDate1;
+            // } else {
+            //   date = null; // Assign null to 'date' when 'inspection_date' is undefined or null
+            // }
 
             return res.status(200).json({
                 Status: 1,
                 Message: 'Inspection fetched successfully',
                 info: {
                     ...inspection.toObject(),
-                    Date: formattedDate,
-                    inspection_date: date,
+                    // Date: formattedDate,
+                    // inspection_date: date,
                     contractor_name:contractor_name,
                     site_name:site_name,
                     site_location:site_location,
@@ -103,9 +107,9 @@ const shortdetails = asyncHandler(async (req, res) => {
             const projectId = inspection.projectid; 
             const project = await Project.findById(projectId);
             
-            const isoDate = inspection.Date.toISOString().split('T')[0];
-            const [year, month, day] = isoDate.split('-');
-            const formattedDate = `${day}/${month}/${year}`;
+            // const isoDate = inspection.Date.toISOString().split('T')[0];
+            // const [year, month, day] = isoDate.split('-');
+            // const formattedDate = `${day}/${month}/${year}`;
 
             if (project) {
                 const contractor_name = project.contractor_name;
@@ -115,7 +119,7 @@ const shortdetails = asyncHandler(async (req, res) => {
                 // Include the details in the inspection data
                 const detailedInspection = {
                     inspection_id: inspection._id, 
-                    Date: formattedDate,
+                    Date: inspection.Date,
                     contractor_name,
                     site_name,
                 };
@@ -141,22 +145,67 @@ const shortdetails = asyncHandler(async (req, res) => {
 
 //get all details of inspection by id
 const getInspection = asyncHandler(async (req, res) => {
+
+    const data = await cateconfig.findOne({});
+    const actualdata = data.category;
+
+    const headings = actualdata.map(heading => ({headingid:heading._id,heading:heading.heading}));
+
+    console.log(headings);
+    const inspectionid = req.params.id;
+    
+    const objs = {} 
+
     const inspection = await Inspection.findById(req.params.id);
+    
+
+    const observations = await Observation.find({inspectionid: inspectionid});
+
+    for (const heading of headings) {
+        const observation = await Observation.findOne({inspectionid: inspectionid, headingid: heading.headingid});
+        if(observation){
+            objs[heading.heading] = observation;
+        }
+    }
+
+    const lifts = await Lift.findOne({inspectionid: inspectionid});
+
     if(inspection){
+
+        const project = await Project.findById(inspection.projectid);
+        const contractor_name = project.contractor_name;
+        const site_name = project.site_name;
+        const site_location = project.site_location;
+
+        // const isoDate = inspection.Date.toISOString().split('T')[0];
+        // const [year, month, day] = isoDate.split('-');
+        // const formattedDate = `${day}/${month}/${year}`;
+
+        // var date;
+
+        // if (typeof inspection.inspection_date !== 'undefined' && inspection.inspection_date !== null) {
+        //   const isoDate1 = inspection.inspection_date.toISOString().split('T')[0];
+        //   const [y, m, d] = isoDate1.split('-');
+        //   const formattedDate1 = `${d}/${m}/${y}`;
+        //   date = formattedDate1;
+        // } else {
+        //   date = null; // Assign null to 'date' when 'inspection_date' is undefined or null
+        // }
         
-        const Foundations = await Observation.findOne({inspectionid: req.params.id, category: 'foundations'});
-        const Sole_boards = await Observation.findOne({inspectionid: req.params.id, category: 'sole_boards'});
-        const Kicker_lifts = await Observation.findOne({inspectionid: req.params.id, category: 'kicker_lifts'});
-        const lifts = await Lift.findOne({inspectionid: req.params.id, category: 'lifts'});
 
         return res.status(200).json({
             Status:1,
-            Message: 'Inspection details',
-            info: inspection,
-            Foundations: Foundations?.isissue ? Foundations : undefined,
-            Sole_boards: Sole_boards?.isissue ? Sole_boards : undefined,
-            Kicker_lifts: Kicker_lifts?.isissue ? Kicker_lifts : undefined,
-            lifts: lifts?.isissue ? lifts : undefined,
+            Message:'Inspection fetched successfully',
+            info:{
+                    ...inspection.toObject(),
+                    // Date : formattedDate,
+                    //inspection_date:date,
+                    contractor_name:contractor_name,
+                    site_name:site_name,
+                    site_location:site_location,
+                },
+            observations:objs,
+            lifts:lifts,
         });
     }
     else{
@@ -168,7 +217,6 @@ const getInspection = asyncHandler(async (req, res) => {
             );
     }
 });
-
 
 const multer = require('multer');
 
@@ -335,13 +383,13 @@ const createInspection = asyncHandler(async (req, res) => {
           });
 });
 
+
 //update inspection by id
 const updateInspectionById = asyncHandler(async (req, res) => {
-    console.time('start');
-    //find where userid and id matches
+  
 
     const inspection = await Inspection.findById({userid:req.user._id,_id:req.params.id});
-    // console.log(inspection.userid,req.user._id);
+   
     const userid = req.user._id;
 
     if(!inspection){
@@ -357,22 +405,23 @@ const updateInspectionById = asyncHandler(async (req, res) => {
     var imageurl;
     
     upload.fields([
-        { name: 'referenceImages', maxCount: 10 }, // You can specify the maximum number of files allowed
-        { name: 'bespokedesigns', maxCount: 10 },
+        { name: 'referenceImages'}, // You can specify the maximum number of files allowed
+        { name: 'bespokedesigns'},
     ])(req, res, async (err) => {
-     const parts = req.body.Date.split("/");
-     const formattedDateStr = `${parts[1]}/${parts[0]}/${parts[2]}`;
+//      const parts = req.body.Date.split("/");
+//      const formattedDateStr = `${parts[1]}/${parts[0]}/${parts[2]}`;
      
-     var date;
-     if(req.body.inspection_date != undefined){
-     const parts1 = req.body.inspection_date?.split("/");
-     const formattedDateStr1 = `${parts1[1]}/${parts1[0]}/${parts1[2]}`;
-        date = formattedDateStr1;
-     }
+
+//      var date;
+//      if(req.body.inspection_date != undefined){
+//      const parts1 = req.body.inspection_date?.split("/");
+//      const formattedDateStr1 = `${parts1[1]}/${parts1[0]}/${parts1[2]}`;
+//         date = formattedDateStr1;
+//      }
     
 
-console.log(formattedDateStr); // Output: "09/29/2023"
-        inspection.Date = formattedDateStr || inspection.Date;
+// console.log(formattedDateStr); // Output: "09/29/2023"
+        inspection.Date = req.body.Date || inspection.Date;
         inspection.starttime = req.body.starttime || inspection.starttime;
         inspection.reference = req.body.reference || inspection.reference;
         inspection.inspector_name = req.body.inspector_name || inspection.inspector_name;
@@ -388,7 +437,7 @@ console.log(formattedDateStr); // Output: "09/29/2023"
 
         inspection.statutory_inspection = req.body.statutory_inspection || inspection.statutory_inspection;
         inspection.reason_for_inspection = req.body.reason_for_inspection || inspection.reason_for_inspection;
-        inspection.inspection_date = date || inspection.inspection_date;
+        inspection.inspection_date = req.body.inspection_date || inspection.inspection_date;
         const updatedInspection = await inspection.save();
         console.timeEnd('end');
        return res.status(200).json(
@@ -467,7 +516,7 @@ const addReason = asyncHandler(async (req, res) => {
         }
     }
 
-});
+}); 
 
 //get options, reason and short project details
 const getInspectionDetails = asyncHandler(async (req, res) => {
@@ -555,6 +604,27 @@ const deleteOption = asyncHandler(async (req, res) => {
 );
 
 
+const addReportUrl = asyncHandler(async (req, res) => {
 
+  
+    const reporturl = req.body.reporturl;
+   const inspection = await Inspection.findById(req.params.id);
+    
+    if(!inspection){
+        return res.status(200).json({
+            Status:0,
+            Message: 'Inspection not found',
+        });
+    }
+    else{
+        inspection.reporturl = reporturl;
+        const updatedInspection = await inspection.save();
+        return res.status(200).json({
+            Status:1,
+            Message: 'Report url added successfully',
+            info: updatedInspection
+        });
+    }
+});
 
-module.exports={getInspections,getReasons,getInspectionDetails, getInspectionById, addReason,createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption,shortdetails}
+module.exports={getInspections,addReportUrl,getReasons,getInspectionDetails, getInspectionById, addReason,createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption,shortdetails}

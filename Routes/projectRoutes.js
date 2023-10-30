@@ -1,4 +1,7 @@
 const express = require('express');
+
+
+
 const router = express.Router();
 const { getProjects, getProjectById, createProject, getShortProjects } = require('../Controllers/projectController');
 const { protect } = require('../middlewares/auth');
@@ -15,6 +18,8 @@ router.get('/:id',getProjectById);
 
 //create project
 router.post('/',protect,createProject);
+
+
 
 
 module.exports = router;

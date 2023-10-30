@@ -8,6 +8,9 @@ const projectRoutes = require('./Routes/projectRoutes');
 const path = require('path');
 const inspectionRoutes = require('./Routes/inspectionRoutes');
 const observationRoutes = require('./Routes/observationRoutes');
+const conclusionRoutes = require('./Routes/conclusion');
+
+const createPdf = require('./Routes/reportpdf');
 
 // const jwt = require('jsonwebtoken');
 // const asyncHandler = require('express-async-handler');
@@ -29,8 +32,10 @@ app.use(express.static('public'));
 app.get('/', (req, res) => { res.send('Hello World') ; res.end();});
 app.use('/api', userRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/conclusions', conclusionRoutes);
 app.use('/api/inspections', inspectionRoutes);
 app.use('/api/observations', observationRoutes);
+app.use('/api/pdf', createPdf);
 app.use('/api/admin', require('./Routes/adminRoutes'));
 
 

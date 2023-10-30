@@ -1,6 +1,6 @@
 const experss = require('express');
 const router = experss.Router();
-const { createInspection, shortdetails,getInspectionById,addReason, getInspections,updateInspectionById,getInspection, getInspectionDetails,addOptions,getOptions,deleteOption } = require('../Controllers/inspectionController');
+const { createInspection, shortdetails,getInspectionById,addReportUrl,addReason, getInspections,updateInspectionById,getInspection, getInspectionDetails,addOptions,getOptions,deleteOption } = require('../Controllers/inspectionController');
 const {upload} = require('../middlewares/imageupload');
 const Inspection = require('../Models/inspection');
 const fs = require('fs');
@@ -64,6 +64,9 @@ router.get('/shortdetails',protect, shortdetails);
 //get inspection details by id
 router.get('/combinedetails', getInspectionDetails);
 
+//add reporturl to inspection
+router.put('/addreporturl/:id', addReportUrl);
+
 //add reason to inspection
 router.post('/addreason', addReason);
 
@@ -88,15 +91,11 @@ router.get('/:id', getInspectionById);
 
 //get all details of inspection by id
 router.get('/details/:id', getInspection);
-
 //get short details of all inspections
 
 
 //update inspection by id
 router.put('/:id',protect, updateInspectionById);  //
-
-
-
 
 
 module.exports = router;

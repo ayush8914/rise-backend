@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 28px;
+        color: #000;
+      }
+      .page-break {
+        page-break-after: always;
+      }
+      .highlighted-text {
+        background-color: gray;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+      }
+    
+     
+
+      .row::after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+    
+      .col-6 {
+        width: 19cm;
+        float: left;
+        box-sizing: border-box;
+        padding: 5px;
+      }
+
+      .col-7 {
+        width: 15cm;
+       
+        float: right;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 5px;
+      }
+
+      .sheet {
+        width: 15cm;
+        height: 2cm;
+        float: right;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 5px;
+      }
+
+      .col-8 {
+        width: 15cm;
+        float: right;
+        text-align: right;
+        box-sizing: border-box;
+        padding: 5px;
+      }
+    
+    
+      .bg-gray {
+        background-color: gray;
+      }
+    
+      .text-white {
+        color: white;
+      }
+
+      pre{
+        font-family:sans-serif;
+      }
+      
+      .statutory_inspection{
+        width: 15cm;
+        float: left;
+        box-sizing: border-box;
+        padding: 5px;
+      }
+
+      .date-time {
+        clear: both;
+        padding-top: 10px; /* Adjust as needed for proper spacing */
+        text-align: right;
+    }
+    
+
+      .statutory_inspection_col{
+        width: 19cm;
+        float: right;
+        box-sizing: border-box;
+        padding: 5px;
+      }
+
+    
+        .structure_check {
+          text-align: center;
+          font-size: 34px;
+          color: white;
+          background-color: gray;
+          padding: 10px; /* Adjust padding as needed */
+        }
+
+    </style>
+    
+  </head>
+  <body>
+    
+    <img src={{logo}} style="margin:50px;  width: 32cm; height: 42cm;" alt="image not found">
+    
+    <hr style="border: none; background-color: green; height: 3px;">
+    <div>
+      <b>
+        Inspection/Report carried out on behalf of 
+        <span style="float: right; margin-left: 10px;">{{inspection.contractor_name}}</span>
+        <br>
+        (Name of Contractor/Client)
+      </b>
+      
+      <hr style="border: none; background-color:#ff802b; height: 3px;">
+      <b>
+        Name of Site/Project
+        <span style="float: right; margin-left: 10px;">{{inspection.site_name}}</span>
+        <br>
+      </b>
+      
+      <hr style="border: none; background-color:#ff802b; height: 3px;">
+      <b>
+        Location of Site/Project
+        <span style="float: right; margin-left: 10px;">{{inspection.site_location}}</span>
+        <br>
+      </b>
+      <br/>
+      <hr style="border: none; background-color:#ff802b; height: 3px;">
+      <b>
+        Date and Time of Inspection Start
+        <span style="float: right; margin-left: 10px;">{{inspection.Date}} - {{inspection.starttime}}</span>
+        <br>
+      </b>
+      <br/>
+      <hr style="border: none; background-color:#ff802b; height: 3px;">
+      <b>
+        Inspection Carried out by
+        <span style="float: right; margin-left: 10px;">{{inspection.inspector_name}}</span>
+        <br>
+      </b>
+      <hr style="border: none; background-color:#ff802b; height: 3px;">
+      <b>
+        Position / Role of Inspector
+        <span style="float: right; margin-left: 10px;">{{inspection.inspector_role}}</span>
+        <br>
+      </b>
+      <br/>
+      
+      <hr style="border: none; background-color:#ff802b; height: 3px;">
+      <div>
+      <b>
+        Description of Scaffold 
+        <span style="float: right; margin-left: 10px; white-space: pre;">{{inspection.scaffold_description}}</span>
+        <div>&nbsp; &nbsp;</div>
+        <br>
+      </b>
+    </div>
+    <br/>
+
+    <hr style="border: none; background-color:#ff802b; height: 3px; clear: both;">
+    <b>
+      Provide Scaffold overview reference images
+      <br>
+      (Elevations)
+      {{#inspection.referenceImages}}
+        <img src={{this}} style="max-width: 200px; max-height: 200px; margin: 5px; float: right;" alt="referenceImages not found"/>
+      {{/inspection.referenceImages}}
+      <br>
+      <br>
+      <div></div>
+      <br/>
+    </b>
+    <br/>
+    <br/>
+    <br/>
+    <hr style="margin:0; background-color:#ff802b; height: 3px;">
+    <div class="row">
+      <div class="col-6">
+        <b>Is the scaffold built in accordance with <br>Bespoke Design or TG20:21 Compliance Sheet?</b>
+      </div>
+      <div class="sheet bg-gray text-white">
+        {{inspection.option}}
+      </div>
+    </div>
+    <hr style="margin:0; background-color:#ff802b; height: 3px;">    
+    <div class="row">
+      <div class="col-6">
+        <b>Provide details of Bespoke Designs provided.<br>(Include Reference Numbers)</b>
+      </div>
+      <div class="col-8">
+        <b>Ref no – {{inspection.reference}}<br>
+          {{#inspection.bespokedesigns}}
+          <img src={{this}} style="max-width: 200px; max-height: 200px; margin: 5px; float: right;" alt="bespokedesigns not found"/>
+        {{/inspection.bespokedesigns}}
+        </b>
+      </div>
+    </div>
+   <hr style="background-color:#ff802b; height: 3px;">
+   <div class="row">
+    <div class="statutory_inspection">
+      <b>Tick if Statutory Inspection 
+      </b>
+        <input type="checkbox" style="width: 25px; height: 25px;" {{#if inspection.statutory_inspection}} checked {{/if}}/>
+    </div>
+    <div class="statutory_inspection_col">
+      <pre>
+        This report forms part of the statutory scaffold 
+        inspections to be carried out on this project. 
+        The particulars of this report conform to the 
+        requirements of The Work At Height 
+        Regulations 2007 – Schedule 7. A copy of this 
+        report must be issued to the client within 24 
+        hours of completing the inspection.
+
+        Statutory scaffold inspections should be carried 
+        out at the following intervals;
+        
+          -Before first use
+          -After modification or adaption
+          -After any event likely to affect the 
+          structure (adverse weather etc.)
+          -Every 7 days
+      </pre>
+    </div>
+  </div>
+  <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  <div class="row">
+    <div class="col-6">
+      <b>Reason for Statutory Inspection</b>
+    </div>
+    <div class="col-7 bg-gray text-white">
+      {{inspection.reason_for_inspection}}
+    </div>
+  </div>
+  <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  <div class="row">
+    <div class="col-6">
+      <b>Date of previous Statutory Inspection</b>
+    </div>
+    <div style="float:right;">
+      {{inspection.inspection_date}}
+    </div>
+  </div>
+  <hr style="background-color:green; height: 3px;">
+  <div class="structure_check">
+    STRUCTURE CHECKS
+  </div>
+  <hr style="margin:0; background-color:#ff802b; height: 3px;"> 
+    <div style="font-size:35px; background-color:#CCCCCC; height:1.2cm;">
+      Ground/Foundation Level
+  </div>
+  <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  
+  {{#each observations as |key observation|}}
+  <div class="row">
+    <div class="col-6">
+      <b>{{key.heading}}</b>
+    </div>
+    <div class="col-7" style="background-color: #e8aa0d; height: 1.4cm;">
+      {{#if key.issue_identified}}
+        Issues identified in this category
+      {{/if}}
+    </div>
+  </div>
+
+  <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  {{#if key.issue_identified}}
+  {{#each key.observations as |innerObservation index|}}
+  <div class="row">
+    <div class="col-6">
+      {{key.heading}} observation ({{incrementedIndex index}})
+      <br/>
+      <br/>
+      Location – North Elevation <br/>
+      {{#innerObservation.media}}
+      <img src={{this}} style="max-width: 200px; max-height: 200px; margin: 5px; float: left;" alt="media not found"/>
+      {{/innerObservation.media}}
+    </div>
+    <div class="col-7">
+      {{innerObservation.option}}
+      <br/>
+      <br/>
+      Additional Comments - {{#innerObservation.notes}}
+      {{this}}<br/>
+      {{/innerObservation.notes}}
+    </div>
+  </div>
+  {{/each}}
+ <hr style="margin:0; background-color:#ff802b; height: 3px;">
+ {{/if}}
+
+{{/each}}
+
+
+ {{#each lifts.observations as |key index|}}
+
+ <div style="font-size:30px; background-color:#CCCCCC; height:1.5cm;">
+  <b>Lift {{incrementedIndex index}}</b><br/>
+</div>
+<hr style="margin:0; background-color:#ff802b; height: 3px;">
+
+  {{#each key.obj as |value innerkey| }}
+  
+    
+      {{#if value.length}}
+      <div class="row">
+        <div class="col-6">
+          <b>{{innerkey}}</b>
+        </div>
+      <div class="col-7" style="background-color: #e8aa0d; height: 1.4cm;">
+        Issues identified in this category
+      </div>
+      </div>
+
+      <hr style="margin:0; background-color:#ff802b; height: 3px;">
+      {{#each value as |innerValue innerindex|}}   
+        <div class="row">
+          <div class="col-6">
+            {{innerkey}} observation ({{incrementedIndex innerindex}})
+            <br/>
+            <br/>
+            Location – North Elevation <br/>
+            {{#innerValue.media}}
+            <img src={{this}} style="max-width: 200px; max-height: 200px; margin: 5px; float: left;" alt="media not found"/>
+            {{/innerValue.media}}
+          </div>
+          <div class="col-7">
+            {{innerValue.option}}
+            <br/>
+            <br/>
+            Additional Comments - {{#innerValue.notes}}
+            {{this}}<br/>
+            {{/innerValue.notes}}
+          </div>
+        </div>
+        <hr style="margin:0; background-color:#ff802b; height: 3px;">
+      {{/each}}
+
+      {{else}}
+      <div class="row">
+        <div class="col-6">
+          <b>{{innerkey}}</b>
+        </div>
+      <div class="col-7" style="background-color: #87ff38; height: 1.4cm;">
+        No issues identified in this category
+      </div>
+    </div>
+    <hr style="margin:0; background-color:#ff802b; height: 3px;">
+      {{/if}}
+  {{/each}}
+
+
+ {{/each}}
+
+ <hr style="background-color:green; height: 3px;">
+ <div class="structure_check">
+  CONCLUSION
+ </div>
+ <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  
+
+ <div class="row">
+   <div class="col-6">
+     <b>RESULT OF INSPECTION </b>
+   </div>
+   <div class="col-7" style="background-color:red;">
+    {{conclusion.result_of_inspection_data}}
+   </div>
+ </div>
+
+  <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  <div class="row">
+    <div class="col-6">
+      <b>Details of any further action required</b>
+      </div>
+    
+    <div class="col-7" >
+      {{conclusion.further_action}}
+    </div>
+  </div>
+
+  <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  <div class="row">
+    <div class="col-6">
+      <b>Items in the report communicated to</b>
+      </div>
+    
+    <div class="col-7">
+      {{conclusion.report_Communicated_to}}
+    </div>
+  </div>  
+
+
+  <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  <div class="row">
+    <div class="col-6">
+      <b>Time inspection finished </b>
+      </div>
+    <div class="col-7">
+      {{conclusion.Time_inspection_finished}}
+    </div>
+  </div>  
+
+  
+  <hr style="margin:0; background-color:#ff802b; height: 3px;">
+  <div class="row">
+    <div class="col-6">
+      <b>Inspectors Sign Of</b>
+      </div>
+    <div class="col-7">
+      <img src={{conclusion.inspector_signature}} style="max-width: 200px; max-height: 200px; margin: 5px; float: right;" alt="signature not found"/>
+      <br/>
+      <br/>
+      <div class="date-time">
+      {{formatDateTime conclusion.createdAt}}
+      </div>
+    </div>
+</div>
+
+<hr style=" background-color:green; height: 3px;">
+    </div>
+  </body>
+</html>

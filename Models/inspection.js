@@ -5,7 +5,7 @@ const inspectionSchema = new mongoose.Schema({
     userid : { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     projectid: { type: mongoose.Schema.Types.ObjectId, ref: "projects" }, //ref to particular project so we can easily get the inspection reports of that project
     reference: { type: String, required: true },            //reference of inspection
-    Date : { type: Date, required: true },                   //date of inspection 
+    Date : { type: String, required: true },                   //date of inspection 
     starttime: { type: String, required: true },            //start time of inspection
     inspector_name : { type: String, required: true },        //name of inspector
     inspector_role : { type: String, required: true },           //role of inspector   => advanced scaffold inspector
@@ -15,8 +15,8 @@ const inspectionSchema = new mongoose.Schema({
     bespokedesigns : [{ type: String, required: false }],            //bespoke designs of scaffold
     statutory_inspection : { type: Boolean, required: false },     //is it statutory   -> required is false because it is not mandatory
     reason_for_inspection : { type: String, required: false },      //reason for statutory inspection -> required is false because it is not mandatory
-    inspection_date : { type: Date, required: false },
-
+    inspection_date : { type: String, required: false },
+    reporturl : { type: String, required: false },
 },{ timestamps: true});
 
 

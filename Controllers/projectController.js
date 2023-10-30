@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Project = require('../Models/project');
 const Inspection = require('../Models/inspection');
+const conclusions = require('../Models/conclusion');
 const multer = require('multer');
 const User = require('../Models/user');
 
@@ -35,24 +36,52 @@ const getShortProjects = asyncHandler(async (req, res) => {
 //get project by id
 const getProjectById = asyncHandler(async (req, res) => {
     
-       function formateddate(inputDate){
-       const day = inputDate.getDate();
-const year = inputDate.getFullYear().toString();
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const month = monthNames[inputDate.getMonth()];
-return `${day} ${month}, ${year}`;
-
-    }
+    function formatDateString(inputDateString) {
+        const dateParts = inputDateString.split('/');
+      
+        const day = dateParts[0];
+        const month = dateParts[1];
+        const year = dateParts[2];
+    
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthAbbreviation = monthNames[parseInt(month, 10) - 1];
+        return `${day} ${monthAbbreviation}, ${year}`;
+      }
     const project = await Project.findById(req.params.id);
     var inspections = await Inspection.find({projectid: req.params.id}).sort({  createdAt: -1 });
     console.log(inspections);
-    if(inspections){
-        inspections = inspections.map( inspection =>  ({
-            inspectionid: inspection._id,
-            name:inspection.inspector_name,
-            date : formateddate(inspection.Date) 
-            }));
+    
+    const getResult = async (inspectionid) => {
+        console.log(inspectionid);
+        var result = await conclusions.findOne({inspectionid: inspectionid});
+      
+        
+        if(result != null){
+            console.log(result.result_of_inspection_data);
+            return result.result_of_inspection_data;
+        }
+        else{
+            return "Conclusion not found";
+        }
     }
+    
+
+    if (inspections) {
+        inspections = await Promise.all(inspections.map(async inspection => {
+            const result = await getResult(inspection._id);
+            
+            // Create a new object with only the desired fields
+            return {
+                inspectionid: inspection._id,
+                name: inspection.inspector_name,
+                date: formatDateString(inspection.Date),
+                result_of_inspection: result,
+            };
+        }));
+    
+    
+}   
+    
     if(project){
         res.status(200).json({
            Status:1,
@@ -162,6 +191,9 @@ const createProject = asyncHandler(async (req, res) => {
         );
      }
 });
+
+
+
 
 
 module.exports={getProjects, getProjectById, createProject,getShortProjects}

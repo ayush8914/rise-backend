@@ -7,16 +7,17 @@ const observationSchema = new mongoose.Schema({
          ref: 'inspections'
        },
        headingid: {type:mongoose.Schema.Types.ObjectId, required:true},
+       heading : {type:String, required:true},
        issue_identified: {type:Boolean, required:true},
        observations : [
          {
             type: {
-               option: {type:String, required:true},
+               option: {type:String, required:false},
                notes : [
                   {type:String, required:false}
                ],
                media : [{type:String, required:false}],
-               rectifyInspection : {type: String , required: true},
+               rectifyInspection : {type: Boolean , required: false},
             },
             required: false
          }

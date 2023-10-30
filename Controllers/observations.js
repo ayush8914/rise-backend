@@ -7,17 +7,28 @@ const Inspection = require('../Models/inspection');
 const addObservation = asyncHandler(async (req, res) => {
     const inspectionid = req.params.id;
     const headingid = req.params.headingid;
+    
     var param=[];
 
     if(headingid == undefined || headingid == null){
         param.push("headingid");
     }
+
     if(inspectionid == undefined || inspectionid == null){
         param.push("inspectionid");
     }
+     
+    const data = await category.findOne({});
+    const actualdata = data.category;
 
-    const heading = await category.findOne({'category._id': headingid});
-    if(!heading){
+
+    const headings = actualdata.map(heading => ({headingid:heading._id,heading:heading.heading}));
+    
+    const finalheading = headings.find(heading => heading.headingid == headingid);
+    console.log(finalheading.heading);
+
+    if(!finalheading || finalheading == []){
+
         return res.status(200).json({success: 0, message: 'Heading not found'});
     }
 
@@ -33,9 +44,11 @@ const addObservation = asyncHandler(async (req, res) => {
         });
     }
     
-    if(!req.body.issue_identified){
+
+    if(!req.body.issue_identified && req.body.issue_identified != false){
         param.push("issue_identified");
     } 
+
 
     if(!req.body.observations){
         param.push("observations");
@@ -56,6 +69,7 @@ const addObservation = asyncHandler(async (req, res) => {
     const observation = new Observation({
         inspectionid: inspectionid,
         headingid: headingid,
+        heading: finalheading.heading,
         issue_identified: req.body.issue_identified,
         observations: req.body.observations
     });
@@ -79,6 +93,7 @@ const addObservation = asyncHandler(async (req, res) => {
     const observation = new Observation({
         inspectionid: inspectionid,
         headingid: headingid,
+        heading: finalheading.heading,
         issue_identified: req.body.issue_identified,
         observations: []
     });
@@ -99,6 +114,7 @@ const addObservation = asyncHandler(async (req, res) => {
     }
    }
 });
+
 
 
 
