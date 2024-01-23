@@ -1,6 +1,6 @@
 
 const express = require('express');
-var pdf = require("pdf-creator-node");
+const pdf = require('pdf-creator-node');
 const fs = require('fs');
 const router = express.Router();
 const axios = require('axios');
@@ -51,12 +51,12 @@ const logo = `${req.protocol}://${req.get('host')}/pdf.png`;
 var html = fs.readFileSync("./Routes/Viewreport.html", "utf8");
 
 var options = {
+  // "phantomPath": "./node_modules/phantomjs/bin/phantomjs",
     format: "A3",
     orientation: "portrait",
     border: "10mm",
     header: {
       height: "20mm",
-
     },
     footer: {
       height: "20mm",
@@ -90,22 +90,12 @@ var options = {
   const file = `${req.protocol}://${req.get('host')}/pdf/`+ inspectionid+ ".pdf";
   console.log(file);
   
-  const insp = await Inspection.findById({_id:inspectionid});
-   console.log(insp);
-  if(!insp){
-    return res.status(200).json({
-      Status:0,
-      Message:'Inspection not found',
-  });
-  }
+    //add code to store the pdf url 
 
-
-  insp.reporturl = file;
-  const updated_inspection = await insp.save();
     res.status(200).json({
         Status:1,
         Message:'Fetched successfully',
-        info: updated_inspection,
+        info: file,
     });
 
 }catch(err){

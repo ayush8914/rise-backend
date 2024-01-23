@@ -199,7 +199,9 @@ const getData = asyncHandler(async(req,res)=>{
 //set options
 const setoptions = asyncHandler(async (req, res) => {
     const option = req.body.option;
-    const options = await objoptions.findOne({option});
+    const headingid = req.body.headingid;
+    const heading = await cateconfig.findOne({'category._id': headingid});
+    const options = await objoptions.findOne({option: option, headingid: headingid});
     if(options){
         return res.status(200).json({
             Status:0,
@@ -208,7 +210,8 @@ const setoptions = asyncHandler(async (req, res) => {
     }
     else{
         const newoption = new objoptions({
-           option
+           option: option,
+              headingid: headingid,
         });
         const createdOption = await newoption.save();
         if(createdOption){
@@ -228,15 +231,26 @@ const setoptions = asyncHandler(async (req, res) => {
 });
 
 
-const getObjOptions = asyncHandler(async(req,res)=>{
-    const data = await objoptions.find({});
+const getObjOptions = asyncHandler(async (req, res) => {
+    const headingid = req.query.headingid; // Use req.query to access the query parameters
+    console.log(headingid);
+    const heading = await cateconfig.findOne({ 'category._id': headingid });
+  
+    if (!heading) {
+      return res.status(200).json({
+        Status: 0,
+        Message: 'Heading not found',
+      });
+    }
+  
+    const data = await objoptions.find({ headingid: headingid });
     return res.status(200).json({
-        Status:1,
-        Message:'Fetched successfully',
-        info: data
+      Status: 1,
+      Message: 'Fetched successfully',
+      info: data,
     });
-}
-)
+  });
+  
 
 //delete obj options
 const deleteObjOptions = asyncHandler(async(req,res)=>{
@@ -251,16 +265,39 @@ const deleteObjOptions = asyncHandler(async(req,res)=>{
 )
 
 
+//edit obj options
+const editObjOptions = asyncHandler(async(req,res)=>{
+    
+    //find by id and update
+    const id = req.body.id;
+    const option = req.body.option;
+
+    const updateOption = await objoptions.findByIdAndUpdate(id,{option});
+    return res.status(200).json({
+        Status:1,
+        Message:'Updated successfully',
+        info: updateOption
+    });
+}
+    );
+
 
 //get all users
 
 
 const getAllUsers = asyncHandler(async(req,res)=>{
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const skip = (page - 1) * limit;
+    const count = await User.countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
     const data = await User.find({});
     return res.status(200).json({
         Status:1,
         Message:'Fetched successfully',
-        info: data
+        info: data,
+        totalPages: totalPages,
     });
 }
 )
@@ -269,13 +306,19 @@ const getAllUsers = asyncHandler(async(req,res)=>{
 //get project by user id 
 
 const getProjectByUserId = asyncHandler(async(req,res)=>{
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const skip = (page - 1) * limit;
+    const count = await Project.countDocuments();
+    const totalPages = Math.ceil(count / limit);
 
     const userid = req.params.id;
-    const data = await Project.find({userid});
+    const data = await Project.find({userid}).skip(skip).limit(limit);
     return res.status(200).json({
         Status:1,
         Message:'Fetched successfully',
-        info: data
+        info: data,
+        totalPages: totalPages,
     });
 
 });
@@ -283,8 +326,14 @@ const getProjectByUserId = asyncHandler(async(req,res)=>{
 
 //get inspections by project id 
 const getInspectionsByProjectId = asyncHandler(async(req,res)=>{
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const skip = (page - 1) * limit;
+    const count = await Inspection.countDocuments({projectid: req.params.id});
+    const totalPages = Math.ceil(count / limit);
+
     const projectid = req.params.id;
-    const inspection = await Inspection.find({projectid});
+    const inspection = await Inspection.find({projectid}).skip(skip).limit(limit);
 
     if(!inspection){
         res.status(200).json({
@@ -297,7 +346,8 @@ const getInspectionsByProjectId = asyncHandler(async(req,res)=>{
         res.status(200).json({
             Status:1,
             Message:'Fetched successfully',
-            info: inspection
+            info: inspection,
+            totalPages: totalPages,
         });
     }
 });
@@ -307,8 +357,14 @@ const getInspectionsByProjectId = asyncHandler(async(req,res)=>{
 //get all inspections
 
 const getInspections = asyncHandler(async(req,res)=>{
-
-    const inspection = await Inspection.find({});
+     
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const skip = (page - 1) * limit;
+    const count = await Inspection.countDocuments();
+    const totalPages = Math.ceil(count / limit);
+    const inspection = await Inspection.find({}).skip(skip).limit(limit);
+    // const inspection = await Inspection.find({});
 
     if(!inspection){
         res.status(200).json({
@@ -321,7 +377,8 @@ const getInspections = asyncHandler(async(req,res)=>{
         res.status(200).json({
             Status:1,
             Message:'Fetched successfully',
-            info: inspection
+            info: inspection,
+            totalPages: totalPages,
         });
     }
 });
@@ -332,4 +389,4 @@ function generateToken(id){
 }
 
 
-module.exports = {setfields,getInspectionsByProjectId,getInspections,getData,setoptions,Adminlogin,getObjOptions,getProjectByUserId,deleteObjOptions,addResult,removeResult,getResults,getAllUsers,getCounts};
+module.exports = {setfields,editObjOptions,getInspectionsByProjectId,getInspections,getData,setoptions,Adminlogin,getObjOptions,getProjectByUserId,deleteObjOptions,addResult,removeResult,getResults,getAllUsers,getCounts};

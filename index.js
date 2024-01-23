@@ -9,18 +9,11 @@ const path = require('path');
 const inspectionRoutes = require('./Routes/inspectionRoutes');
 const observationRoutes = require('./Routes/observationRoutes');
 const conclusionRoutes = require('./Routes/conclusion');
-
-const createPdf = require('./Routes/reportpdf');
-
-// const jwt = require('jsonwebtoken');
-// const asyncHandler = require('express-async-handler');
-// const User = require('./models/user');
+const viewreport = require('./Routes/reportpdf');
 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-
 
 // Middlewares
 app.use(cors());
@@ -34,11 +27,9 @@ app.use('/api', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/conclusions', conclusionRoutes);
 app.use('/api/inspections', inspectionRoutes);
-app.use('/api/observations', observationRoutes);
-app.use('/api/pdf', createPdf);
+app.use('/api/observations', observationRoutes);    
+app.use('/api/viewreport',viewreport );
 app.use('/api/admin', require('./Routes/adminRoutes'));
-
-
 
 const start = async () => {
         try {
@@ -48,6 +39,5 @@ const start = async () => {
             console.log(error);
         }
 };
-
 
 start();

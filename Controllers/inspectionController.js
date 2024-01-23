@@ -604,27 +604,27 @@ const deleteOption = asyncHandler(async (req, res) => {
 );
 
 
-const addReportUrl = asyncHandler(async (req, res) => {
+// const addReportUrl = asyncHandler(async (req, res) => {
 
   
-    const reporturl = req.body.reporturl;
-   const inspection = await Inspection.findById(req.params.id);
+//     const reporturl = req.body.reporturl;
+//    const inspection = await Inspection.findById(req.params.id);
     
-    if(!inspection){
-        return res.status(200).json({
-            Status:0,
-            Message: 'Inspection not found',
-        });
-    }
-    else{
-        inspection.reporturl = reporturl;
-        const updatedInspection = await inspection.save();
-        return res.status(200).json({
-            Status:1,
-            Message: 'Report url added successfully',
-            info: updatedInspection
-        });
-    }
-});
+//     if(!inspection){
+//         return res.status(200).json({
+//             Status:0,
+//             Message: 'Inspection not found',
+//         });
+//     }
+//     else{
+//         inspection.reporturl = reporturl;
+//         const updatedInspection = await inspection.save();
+//         return res.status(200).json({
+//             Status:1,
+//             Message: 'Report url added successfully',
+//             info: updatedInspection
+//         });
+//     }
+// });
 
-module.exports={getInspections,addReportUrl,getReasons,getInspectionDetails, getInspectionById, addReason,createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption,shortdetails}
+module.exports={getInspections,getReasons,getInspectionDetails, getInspectionById, addReason,createInspection,updateInspectionById,getInspection,addOptions,getOptions,deleteOption,shortdetails}

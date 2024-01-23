@@ -1,4 +1,4 @@
-const asyncHandler = require('express-async-handler');
+    const asyncHandler = require('express-async-handler');
 const Project = require('../Models/project');
 const Inspection = require('../Models/inspection');
 const conclusions = require('../Models/conclusion');
@@ -7,13 +7,31 @@ const User = require('../Models/user');
 
 //get all projects
 const getProjects = asyncHandler(async (req, res) => {
-    const projects = await  Project.find({}).sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const skip = (page - 1) * limit;
+    const count = await Project.countDocuments({isdelete:0});
+    const totalPages = Math.ceil(count / limit);
+    if(page != 0){
+    const projects = await  Project.find({isdelete:0}).sort({ createdAt: -1 }).skip(skip).limit(limit); 
     res.status(200).json({
         Status:1,
         Message: "Successful",
-        info:projects
+        info:projects,
+        totalPages: totalPages,
        }
     );
+    }
+    else{
+        const projects = await  Project.find({isdelete:0}).sort({ createdAt: -1 });
+        res.status(200).json({
+            Status:1,
+            Message: "Successful",
+            info:projects
+           }
+        );
+    
+    }
 });
 
 //get contractor name and project ids of all projects
@@ -152,12 +170,13 @@ const createProject = asyncHandler(async (req, res) => {
 
             if (req.file) {
 
-            const { contractor_name, site_name, site_location} = req.body;
+            const { contractor_name, site_name, site_location,project_name} = req.body;
             const project = new Project({
                         userid,
                         contractor_name,
                         site_name,
                         site_location,
+                        project_name,
                         image: baseUrl+ "/projects/"+ req.file.filename
                     });
 
@@ -194,6 +213,50 @@ const createProject = asyncHandler(async (req, res) => {
 
 
 
+const deleteProject = asyncHandler(async (req, res) => {
 
+    const project = await Project.findById(req.params.id);
+    
+    if(project){
+        project.isdelete = 1;
+       await project.save();
+        res.status(200).json({
+           Status:1,
+           Message : "project deleted successfully",
+           project:project
+       
+        }
+            );
+    }
+    else{
+        res.status(200).json(
+            {   Status:0,
+                Message: 'Project not found'
+            });
+    }
+});
 
-module.exports={getProjects, getProjectById, createProject,getShortProjects}
+const setProject = asyncHandler(async (req, res) => {
+    console.log("Fsdjfj");
+    // const projects = await Project.find({}).sort({ createdAt: -1 });
+  const projects = await Project.find();
+  console.log(projects);
+  for(var i in projects){
+    if(i){
+    
+        const project1 = await Project.findById(i._id); 
+        console.log(project1);
+        project1.isdelete = 0;
+        project1.save();
+        res.status(200).json(
+            {   Status:0,
+                Message: 'Project not found',
+                project:project1
+
+            });
+        
+    }
+  }
+
+});
+module.exports={getProjects, getProjectById, createProject,getShortProjects,deleteProject,setProject}

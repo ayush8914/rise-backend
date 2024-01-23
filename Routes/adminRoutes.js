@@ -1,6 +1,6 @@
 const experss = require('express');
 const router = experss.Router();
-const {setfields,getData,setoptions,getObjOptions,Adminlogin,getInspections,getInspectionsByProjectId,deleteObjOptions,getAllUsers,getProjectByUserId,getCounts} = require('../Controllers/adminController');
+const {setfields,getData,setoptions,getObjOptions,editObjOptions,Adminlogin,getInspections,getInspectionsByProjectId,deleteObjOptions,getAllUsers,getProjectByUserId,getCounts} = require('../Controllers/adminController');
 
 router.get('/projectbyuserid/:id',getProjectByUserId);
 
@@ -15,7 +15,9 @@ router.post('/objoptions',setoptions);
 
 router.get('/objoptions',getObjOptions);
 
-router.delete('/objoptions',deleteObjOptions);
+router.delete('/objoptions',deleteObjOptions);  
+
+router.post('/editoption',editObjOptions);
 
 
 //get all inspections
